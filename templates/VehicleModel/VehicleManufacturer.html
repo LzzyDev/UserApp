@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style>
+			.mui-row.mui-fullscreen>[class*="mui-col-"] {
+				height: 100%;
+			}
+			.mui-col-xs-3,
+			.mui-control-content {
+				overflow-y: auto;
+				height: 100%;
+			}
+			.mui-segmented-control .mui-control-item {
+				line-height: 50px;
+				width: 100%;
+			}
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+				background-color: #fff;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">车系<span style="font-size: 14px; margin-left: 5px;">（<span>宝马</span>）</span></h1>
+		</header>
+		<div class="mui-content mui-row mui-fullscreen">
+
+			<div class="mui-col-xs-3">
+				<div id="segmentedControls" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-vertical">
+					<a class="mui-control-item mui-active" href="#content1">宝马（进口）</a>
+					<a class="mui-control-item" href="#content2">华晨宝马</a>
+					<a class="mui-control-item" href="#content3">宝马M</a>
+				</div>
+			</div>
+			<div id="segmentedControlContents" class="mui-col-xs-9" style="border-left: 1px solid #c8c7cc;">
+				<div id="content1" class="mui-control-content mui-active">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell">宝马X5</li>
+						<li class="mui-table-view-cell">宝马7系</li>
+						<li class="mui-table-view-cell">宝马i3</li>
+						<li class="mui-table-view-cell">宝马i8</li>
+						<li class="mui-table-view-cell">宝马2系多功能旅行车</li>
+						<li class="mui-table-view-cell">宝马5系GT</li>
+						<li class="mui-table-view-cell">宝马1系</li>
+						<li class="mui-table-view-cell">宝马3系(进口)</li>
+						<li class="mui-table-view-cell">宝马5系(进口)</li>
+						<li class="mui-table-view-cell">宝马Z4</li>
+						<li class="mui-table-view-cell">宝马2系</li>
+					</ul>
+				</div>
+				<div id="content2" class="mui-control-content">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell">宝马3系</li>
+						<li class="mui-table-view-cell">宝马5系</li>
+						<li class="mui-table-view-cell">宝马X1</li>
+
+					</ul>
+				</div>
+				<div id="content3" class="mui-control-content">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell">宝马X5M</li>
+						<li class="mui-table-view-cell">宝马M3</li>
+						<li class="mui-table-view-cell">宝马X6M</li>
+						<li class="mui-table-view-cell">宝马M6</li>
+						<li class="mui-table-view-cell">宝马M5</li>
+						<li class="mui-table-view-cell">宝马M4</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			mui('.mui-table-view').on('tap', '.mui-table-view-cell', function() {
+				var id = this.getAttribute('data-value');
+				console.log(id);
+				mui.openWindow({
+					url: 'VehicleModel.html',
+					id: 'VehicleModel.html',
+					show: {
+						aniShow: 'slide-in-right',
+						duration: 300
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>

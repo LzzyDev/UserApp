@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/site.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<div class="header-bar">
+				<a class="mui-icon mui-icon-bars mui-pull-left"></a>
+				<a class="mui-icon mui-icon-location mui-pull-right" style="color: #999;">柳州</a>
+				<h1 id="title" class="mui-title">车事帮</h1>
+			</div>
+		</header>
+
+		<div class="car-nav">
+			<nav id="bottomnav" class="mui-bar mui-bar-tab">
+				<a id="templates/Home/index.html" class="mui-tab-item mui-active">
+					<span class="mui-icon mui-icon-home"></span>
+					<span class="mui-tab-label">首页</span>
+				</a>
+				<a id="templates/Search/index.html" class="mui-tab-item">
+					<span class="mui-icon mui-icon-search"></span>
+					<span class="mui-tab-label">发现</span>
+				</a>
+				<a id="templates/Person/index.html" class="mui-tab-item">
+					<span class="mui-icon mui-icon-person"></span>
+					<span class="mui-tab-label">我的</span>
+				</a>
+				<a id="templates/Activity/index.html" class="mui-tab-item">
+					<span class="mui-icon mui-icon-star"></span>
+					<span class="mui-tab-label">活动</span>
+				</a>
+			</nav>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/MapHelp.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			var subpages = ['templates/Home/index.html', 'templates/Search/index.html',
+				'templates/Person/index.html', 'templates/Activity/index.html'
+			];
+			var subpage_style = {
+				top: '45px',
+				bottom: '51px'
+			};
+			var aniShow = {};
+			 //创建子页面，首个选项卡页面显示，其它均隐藏；
+			var menu = null,
+				main = null;
+			var templates = {};
+			var getTemplate = function(name, header, content) {
+				var template = templates[name];
+				if (!template) {
+					//预加载共用父模板；
+					var headerWebview = mui.preload({
+						url: header,
+						id: name + "-main",
+						styles: {
+							popGesture: "hide",
+						},
+						extras: {
+							mType: 'main'
+						}
+					});
+					//预加载共用子webview
+					var subWebview = mui.preload({
+						url: !content ? "" : content,
+						id: name + "-sub",
+						styles: {
+							top: '0px',
+							bottom: '0px',
+						},
+						extras: {
+							mType: 'sub'
+						}
+					});
+					subWebview.addEventListener('loaded', function() {
+						setTimeout(function() {
+							subWebview.show();
+						}, 200);
+					});
+					subWebview.hide();
+					headerWebview.append(subWebview);
+					//iOS平台支持侧滑关闭，父窗体侧滑隐藏后，同时需要隐藏子窗体；
+					if (mui.os.ios) { //5+父窗体隐藏，子窗体还可以看到？不符合逻辑吧？
+						headerWebview.addEventListener('hide', function() {
+							subWebview.hide("none");
+						});
+					}
+					templates[name] = template = {
+						name: name,
+						header: headerWebview,
+						content: subWebview,
+					};
+				}
+				return template;
+			};
+			var initTemplates = function() {
+				getTemplate('default', 'template.html');
+			};
+
+
+			mui.plusReady(function() {
+				// 判断是否加载欢迎页
+				//读取本地存储，检查是否为首次启动
+				var showGuide = plus.storage.getItem("lauchFlag");
+				if (showGuide) {
+					//有值，说明已经显示过了，无需显示
+					// 延时关闭启动页
+					setTimeout(function() {
+						plus.navigator.closeSplashscreen();
+					}, 1000);
+					initTemplates();
+				} else {
+					//显示启动导航
+					mui.openWindow({
+						id: 'guide',
+						url: 'guide.html',
+						waiting: {
+							autoShow: false
+						}
+					});
+					initTemplates();
+				}
+				var self = plus.webview.currentWebview();
+				for (var i = 0; i < 4; i++) {
+					var temp = {};
+					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
+					if (i > 0) {
+						sub.hide();
+					} else {
+						temp[subpages[i]] = "true";
+						mui.extend(aniShow, temp);
+					}
+					self.append(sub);
+				}
+				//仅支持竖屏显示
+				plus.screen.lockOrientation("portrait-primary");
+				main = plus.webview.currentWebview();
+				main.addEventListener('maskClick', closeMenu);
+				//处理侧滑导航，为了避免和子页面初始化等竞争资源，延迟加载侧滑页面；
+				setTimeout(function() {
+					menu = mui.preload({
+						id: 'index-menu',
+						url: 'index-menu.html',
+						styles: {
+							left: 0,
+							width: '70%',
+							zindex: -1
+						},
+						show: {
+							aniShow: 'none'
+						}
+					});
+				}, 200);
+				MapHelp.getPosByBaidu(MapHelp.geoInf);
+			});
+			 //当前激活选项
+			var activeTab = subpages[0];
+			var title = document.getElementById("title");
+			 // 选项卡点击事件
+			mui("#bottomnav").on('tap', 'a', function(e) {
+				var targetTab = this.getAttribute('id');
+				if (targetTab == activeTab) {
+					return;
+				}
+				//更换标题
+				title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
+				//显示目标选项卡
+				// 若为iOS平台或非首次显示，则直接显示
+				if (mui.os.ios || aniShow[targetTab]) {
+					plus.webview.show(targetTab);
+				} else {
+					var temp = {};
+					temp[targetTab] = "true";
+					mui.extend(aniShow, temp);
+					plus.webview.show(targetTab, "fade-in", 0);
+				}
+				//隐藏当前;
+				plus.webview.hide(activeTab);
+				//更改当前活跃的选项卡
+				activeTab = targetTab;
+			})
+			var main = null;
+			var showMenu = false;
+			var isInTransition = false;
+			/**
+			 * 显示侧滑菜单
+			 */
+			function openMenu() {
+				if (isInTransition) {
+					return;
+				}
+				if (!showMenu) {
+					//侧滑菜单处于隐藏状态，则立即显示出来；
+					isInTransition = true;
+					menu.setStyle({
+						mask: 'rgba(0,0,0,0)'
+					}); //menu设置透明遮罩防止点击
+					menu.show('none', 0, function() {
+						//主窗体开始侧滑并显示遮罩
+						main.setStyle({
+							mask: 'rgba(0,0,0,0.4)',
+							left: '70%',
+							transition: {
+								duration: 150
+							}
+						});
+						mui.later(function() {
+							isInTransition = false;
+							menu.setStyle({
+								mask: "none"
+							}); //移除menu的mask
+						}, 160);
+						showMenu = true;
+					});
+				}
+			};
+			/**
+			 * 关闭菜单
+			 */
+			function closeMenu() {
+				if (isInTransition) {
+					return;
+				}
+				if (showMenu) {
+					//关闭遮罩；
+					//主窗体开始侧滑；
+					isInTransition = true;
+					main.setStyle({
+						mask: 'none',
+						left: '0',
+						transition: {
+							duration: 200
+						}
+					});
+					showMenu = false;
+					//等动画结束后，隐藏菜单webview，节省资源；
+					mui.later(function() {
+						isInTransition = false;
+						menu.hide();
+					}, 300);
+				}
+			};
+			 //点击左上角侧滑图标，打开侧滑菜单；
+			document.querySelector('.mui-icon-bars').addEventListener('tap', function(e) {
+				if (showMenu) {
+					closeMenu();
+				} else {
+					openMenu();
+				}
+			});
+			 //在android4.4.2中的swipe事件，需要preventDefault一下，否则触发不正常
+			window.addEventListener('dragstart', function(e) {
+				mui.gestures.touch.lockDirection = true; //锁定方向
+				mui.gestures.touch.startDirection = e.detail.direction;
+			});
+			 //主界面向右滑动，若菜单未显示，则显示菜单；否则不做任何操作
+			window.addEventListener("swiperight", function(e) {
+				if (Math.abs(e.detail.angle) < 10) {
+					openMenu();
+				}
+			});
+			 //oldPage.addEventListener("swiperight",openMenu);
+			 //主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
+			window.addEventListener("swipeleft", function(e) {
+				console.log(e.detail.angle);
+				closeMenu();
+			});
+			 //侧滑菜单触发关闭菜单命令
+			window.addEventListener("menu:close", closeMenu);
+			window.addEventListener("menu:open", openMenu);
+			 //重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+			mui.menu = function() {
+					if (showMenu) {
+						closeMenu();
+					} else {
+						openMenu();
+					}
+				}
+				//首页返回键处理
+				//处理逻辑：1秒内，连续两次按返回键，则退出应用；
+			var first = null;
+			mui.back = function() {
+				if (showMenu) {
+					closeMenu();
+				} else {
+					//首次按键，提示‘再按一次退出应用’
+					if (!first) {
+						first = new Date().getTime();
+						mui.toast('再按一次退出应用');
+						setTimeout(function() {
+							first = null;
+						}, 1000);
+					} else {
+						if (new Date().getTime() - first < 1000) {
+							plus.runtime.quit();
+						}
+					}
+				}
+			};
+		</script>
+	</body>
+
+</html>

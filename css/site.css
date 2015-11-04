@@ -1,0 +1,65 @@
+/*
+ *这是单独为CarMaidMemberApp准备的个性化css，可以覆盖标准mui的css定义；
+ * 在实际项目开发时，建议为App单独写一个css文件，从而实现项目的自定义皮肤功能；
+ * 
+ * */
+
+a {
+	color: #FF6504;
+}
+/*************************************  Index   ********************************************************/
+/*header*/
+
+.header-bar .mui-icon {
+	line-height: 33px;
+	font-size: 16px;
+}
+.header-bar .mui-title {
+	font-size: 20px;
+	line-height: 53px;
+}
+.header-bar .mui-icon-bars {
+	font-size: 24px;
+}
+/*car-nav*/
+
+.car-nav .mui-bar-tab .mui-tab-item.mui-active {
+	color: #ff6504;
+}
+/*************************************  Home   ********************************************************/
+
+.mui-slider-indicator {
+	bottom: 5px;
+}
+.mui-slider-title {
+	line-height: 30px;
+	height: 28px;
+}
+.mui-table-view.mui-grid-view .mui-table-view-cell {
+	/*border-radius: 10px;*/
+	text-shadow:black 2px 2px 2px;
+	margin-top: 1px;
+}
+.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body {
+	color: white;
+}
+.mui-table-view-cell span {
+	color: white;
+}
+.mui-grid-view.mui-grid-9 .mui-table-view-cell {
+
+	border-bottom: 3px solid #efeff4;
+	border-right: 3px solid #efeff4;
+	border-left: 3px solid #efeff4;
+	border-top: 3px solid #efeff4;
+	/*border: 3px solid #efeff4;*/
+	text-shadow:black 2px 2px 2px;
+	
+}
+
+.mui-table-view.mui-grid-view .mui-table-view-cell .mui-media-body{
+	font-size: 13px;
+}
+/*************************************  Search   ********************************************************/
+/*************************************  Person   ********************************************************/
+/*************************************  Activity   ********************************************************/

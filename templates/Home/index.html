@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/site.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+	</head>
+
+	<style type="text/css">
+	</style>
+
+	<body>
+		<div class="mui-content">
+
+			<ul style="width:98%;margin: 0 auto;" class="mui-table-view mui-grid-view mui-grid-9">
+				<li style="background-color: #ff6504;" class="mui-table-view-cell mui-media mui-col-xs-8  mui-col-sm-8">
+					<a href="#">
+						<span class="mui-icon iconfont icon-chuizi"></span>
+						<div class="mui-media-body">求秒杀</div>
+					</a>
+				</li>
+				<li style="background-color: #A82E39" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="#">
+						<p>
+							<h3 style="color: white;">紧急</h3></p>
+						<p>
+							<h3 style="color: white;">救援</h3></p>
+					</a>
+				</li>
+			</ul>
+
+			<ul class="mui-table-view mui-table-view-chevron">
+				<li>
+					<div id="slider" class="mui-slider">
+						<div class="mui-slider-group mui-slider-loop">
+							<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+							<div class="mui-slider-item mui-slider-item-duplicate">
+								<a href="#"><img src="../../images/adBanner3.jpg"></a>
+								<p class="mui-slider-title">静静看这世界</p>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#"><img src="../../images/adBanner1.jpg" /></a>
+								<p class="mui-slider-title">静静看这世界</p>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#"><img src="../../images/adBanner2.jpg" /></a>
+								<p class="mui-slider-title">静静看这世界</p>
+							</div>
+							<div class="mui-slider-item">
+								<a href="#"><img src="../../images/adBanner3.jpg" /></a>
+								<p class="mui-slider-title">静静看这世界</p>
+							</div>
+							<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+							<div class="mui-slider-item mui-slider-item-duplicate">
+								<a href="#"><img src="../../images/adBanner1.jpg" /></a>
+							</div>
+						</div>
+						<div class="mui-slider-indicator mui-text-right">
+							<div class="mui-indicator mui-active"></div>
+							<div class="mui-indicator"></div>
+							<div class="mui-indicator"></div>
+						</div>
+					</div>
+
+				</li>
+			</ul>
+
+			<ul style="width:98%;margin: 0 auto;" class="mui-table-view mui-grid-view mui-grid-9">
+				<li style="background-color: #ff6504;" class="mui-table-view-cell mui-media mui-col-xs-4  mui-col-sm-4">
+					<a href="#">
+						<span class="mui-icon iconfont icon-baoyang1"></span>
+						<div class="mui-media-body">保养</div>
+					</a>
+				</li>
+				<li style="background-color: #35918A;" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="#">
+						<span class="mui-icon iconfont icon-weixiu"></span>
+						<div class="mui-media-body">维修</div>
+					</a>
+				</li>
+				<li style="background-color: #2073A3;" class="mui-table-view-cell mui-media mui-col-xs-4  mui-col-sm-4">
+					<a href="#">
+						<span class="mui-icon iconfont icon-xiche"></span>
+						<div class="mui-media-body">洗车</div>
+					</a>
+				</li>
+				<li style="background-color: #BA414B;" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="#">
+						<span class="mui-icon iconfont icon-unie60a"></span>
+						<div class="mui-media-body">帮购</div>
+					</a>
+				</li>
+				<li style="background-color: #2D4B64;" class="mui-table-view-cell mui-media mui-col-xs-4  mui-col-sm-4">
+					<a href="#">
+						<span class="mui-icon iconfont icon-yuyuebanshi"></span>
+						<div class="mui-media-body">帮办</div>
+					</a>
+				</li>
+				<li style="background-color: #28784B;" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+					<a href="#">
+						<span class="mui-icon iconfont icon-savemoney"></span>
+						<div class="mui-media-body">帮省</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/MenuEvent.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+
+			 // 自动轮播图片
+			var slider = mui("#slider");
+			slider.slider({
+				interval: 5000
+			});
+		</script>
+	</body>
+
+</html>
