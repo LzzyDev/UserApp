@@ -21,3 +21,10 @@ MapHelp.getPosByBaidu = function(geoInf) {
 		provider: 'baidu'
 	});
 }
+
+/*
+ * 获取存储在本地的位置信息。
+ */
+MapHelp.getstoragePos = function(){
+	
+}
