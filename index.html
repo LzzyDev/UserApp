@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
@@ -104,42 +105,42 @@
 			var initTemplates = function() {
 				getTemplate('default', 'template.html');
 			};
-			
-			//请求Banner成功后的回调方法
-			function onSuccess (data){
-				
-				// 获取Home 的 webview对象
-				var HomePage = plus.webview.getWebviewById('templates/Home/index.html');
-				// 触发UpBanners 事件
-				mui.fire(HomePage,'UpBanners',{
-					data :data
-				});
-				console.log(HomePage.id);
+			 //请求Banner成功后的回调方法
+			function onSuccess(data) {
+				if (data.length > 0) {
+					// 获取Home 的 webview对象
+					var HomePage = plus.webview.getWebviewById('templates/Home/index.html');
+					// 触发UpBanners 事件
+					mui.fire(HomePage, 'UpBanners', {
+						data: data
+					});
+					console.log(HomePage.id);
+				}
 			}
-			function onError (xhr,type,errorThrown){
+
+			function onError(xhr, type, errorThrown) {
 				console.log(type);
 			}
-			function initBanners(){
+
+			function initBanners() {
 				//	http://120.25.60.120:8080/api/init/getbanners
-				mui.ajax('http://120.25.60.120:8080/api/init/getbanners',{
-					dataType:'json',
-					type:'get',
-					timeout:10000,
-					success:function(data){
+				mui.ajax('http://120.25.60.120:8080/api/init/getbanners', {
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					success: function(data) {
 						onSuccess(data);
 					},
-					error:function(xhr,type,errorThrown){
-						onError(xhr,type,errorThrown);
+					error: function(xhr, type, errorThrown) {
+						onError(xhr, type, errorThrown);
 					}
 				})
 			};
-
-
 			mui.plusReady(function() {
 				// 判断是否加载欢迎页
 				//读取本地存储，检查是否为首次启动
 				var showGuide = plus.storage.getItem("lauchFlag");
-				if (showGuide  == plus.runtime.version) {
+				if (showGuide == plus.runtime.version) {
 					//有值，说明已经显示过了，无需显示
 					// 延时关闭启动页
 					setTimeout(function() {
