@@ -104,6 +104,35 @@
 			var initTemplates = function() {
 				getTemplate('default', 'template.html');
 			};
+			
+			//请求Banner成功后的回调方法
+			function onSuccess (data){
+				
+				// 获取Home 的 webview对象
+				var HomePage = plus.webview.getWebviewById('templates/Home/index.html');
+				// 触发UpBanners 事件
+				mui.fire(HomePage,'UpBanners',{
+					data :data
+				});
+				console.log(HomePage.id);
+			}
+			function onError (xhr,type,errorThrown){
+				console.log(type);
+			}
+			function initBanners(){
+				//	http://120.25.60.120:8080/api/init/getbanners
+				mui.ajax('http://120.25.60.120:8080/api/init/getbanners',{
+					dataType:'json',
+					type:'get',
+					timeout:10000,
+					success:function(data){
+						onSuccess(data);
+					},
+					error:function(xhr,type,errorThrown){
+						onError(xhr,type,errorThrown);
+					}
+				})
+			};
 
 
 			mui.plusReady(function() {
@@ -161,6 +190,8 @@
 				}, 200);
 				// 获取当前设备位置
 				MapHelp.getPosByBaidu(MapHelp.geoInf);
+				// initBanners
+				initBanners();
 			});
 			 //当前激活选项
 			var activeTab = subpages[0];

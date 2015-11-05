@@ -119,6 +119,16 @@
 			slider.slider({
 				interval: 5000
 			});
+			
+			// 添加监听更新Banners 事件
+			window.addEventListener('UpBanners',function(e){
+				
+				var SliderGroup = mui('#slider .mui-slider-group'); // slider.element.querySelector('.mui-slider-group');
+				
+				console.log(e.detail.data);
+				console.log(SliderGroup[0]);
+			});
+			
 		</script>
 	</body>
 
