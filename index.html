@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
@@ -111,7 +110,7 @@
 				// 判断是否加载欢迎页
 				//读取本地存储，检查是否为首次启动
 				var showGuide = plus.storage.getItem("lauchFlag");
-				if (showGuide) {
+				if (showGuide  == plus.runtime.version) {
 					//有值，说明已经显示过了，无需显示
 					// 延时关闭启动页
 					setTimeout(function() {
@@ -160,7 +159,6 @@
 						}
 					});
 				}, 200);
-				
 				// 获取当前设备位置
 				MapHelp.getPosByBaidu(MapHelp.geoInf);
 			});
