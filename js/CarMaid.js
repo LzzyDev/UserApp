@@ -12,8 +12,24 @@ var CarMaid = {};
 		geoInf: function(position) {
 			console.log(JSON.stringify(position));
 
+			var address = position.address; //获取地理坐标信息
+			var district = address.district ? address.district : "";
+			var city = address.city ? address.city : "";
+			var location = "";
+			if (district != "") {
+				location = district;
+			} else if (city != "") {
+				location = city;
+			} else {
+				mui.toast('定位失败');
+			}
+			location = location != "" ? location : '柳州市';
+			console.log(location);
+
+			document.getElementById('Location').innerText = location;
+
 			plus.storage.setItem("position", JSON.stringify(position));
-			
+
 		},
 		/*
 		 * 获取位置信息 By Baidu
