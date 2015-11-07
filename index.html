@@ -40,7 +40,7 @@
 			</nav>
 		</div>
 		<script src="js/mui.min.js"></script>
-		<script src="js/MapHelp.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/CarMaid.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 			var subpages = ['templates/Home/index.html', 'templates/Search/index.html',
@@ -190,7 +190,9 @@
 					});
 				}, 200);
 				// 获取当前设备位置
-				MapHelp.getPosByBaidu(MapHelp.geoInf);
+
+				CarMaid.Map.getPosByBaidu(CarMaid.Map.geoInf);
+
 				// initBanners
 				initBanners();
 			});
