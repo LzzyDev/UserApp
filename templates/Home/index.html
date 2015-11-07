@@ -32,8 +32,7 @@
 					</a>
 				</li>
 			</ul>
-			
-			
+
 			<ul class="mui-table-view mui-table-view-chevron">
 				<li>
 					<div id="slider" class="mui-slider">
@@ -90,39 +89,32 @@
 			mui.init();
 			 // 自动轮播图片
 			var slider = mui("#slider");
-
 			console.log(slider[0]);
 			 // 添加监听更新Banners 事件
 			window.addEventListener('UpBanners', function(e) {
-
 				var banners = e.detail.data;
 				if (banners && banners.length > 0) {
-
 					var sliderGroup = document.createElement('div');
 					sliderGroup.className = 'mui-slider-group mui-slider-loop';
 					var len = banners.length;
 					console.log(len);
 					//第一个节点是最后一张轮播
-				 	var firstBanner = CarMaid.Banners.addBanne(banners[len-1].index,banners[len-1].imgUrl,banners[len-1].name,"duplicate");
-				 	sliderGroup.appendChild(firstBanner);
-					for(var i = 0;i<len; i++){
-
+					var firstBanner = CarMaid.Banners.addBanne(banners[len - 1].index, banners[len - 1].imgUrl, banners[len - 1].name, "duplicate");
+					sliderGroup.appendChild(firstBanner);
+					for (var i = 0; i < len; i++) {
 						var index = banners[i].index;
 						var imgUrl = banners[i].imgUrl;
 						var name = banners[i].name;
-					   	var div = CarMaid.Banners.addBanne(index,imgUrl,name);
+						var div = CarMaid.Banners.addBanne(index, imgUrl, name);
 						console.log(div);
 						sliderGroup.appendChild(div);
-						
 					}
 					//最后一个节点是第一张轮播
-					var lastBanner = CarMaid.Banners.addBanne(banners[0].index,banners[0].imgUrl,banners[0].name,"duplicate");
+					var lastBanner = CarMaid.Banners.addBanne(banners[0].index, banners[0].imgUrl, banners[0].name, "duplicate");
 					sliderGroup.appendChild(lastBanner);
-
 					console.log(sliderGroup.innerHTML);
-					
 					var IndicatorDIV = CarMaid.Banners.AddIndicator(len);
-					slider[0].innerHTML ="";
+					slider[0].innerHTML = "";
 					slider[0].appendChild(sliderGroup);
 					slider[0].appendChild(IndicatorDIV);
 					// 自动播放
@@ -134,9 +126,7 @@
 				setTimeout(function() {
 					plus.navigator.closeSplashscreen();
 				}, 2000);
-
 				console.log(e.detail.data);
-
 			});
 		</script>
 	</body>
