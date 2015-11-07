@@ -105,6 +105,7 @@
 			window.addEventListener('UpBanners', function(e) {
 				var banners = e.detail.data;
 				if (banners && banners.length > 0) {
+					// 创建 sliderGroup div
 					var sliderGroup = document.createElement('div');
 					sliderGroup.className = 'mui-slider-group mui-slider-loop';
 					var len = banners.length;
@@ -124,6 +125,7 @@
 					var lastBanner = CarMaid.Banners.addBanne(banners[0].index, banners[0].imgUrl, banners[0].name, "duplicate");
 					sliderGroup.appendChild(lastBanner);
 					console.log(sliderGroup.innerHTML);
+					// 创建IndicatorDiv 就是那个小圆点。
 					var IndicatorDIV = CarMaid.Banners.AddIndicator(len);
 					slider[0].innerHTML = "";
 					slider[0].appendChild(sliderGroup);
