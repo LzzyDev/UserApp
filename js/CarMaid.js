@@ -1,4 +1,4 @@
-  var CarMaid = {};
+var CarMaid = {};
 
 /*
  * Map
@@ -11,9 +11,9 @@
 		 */
 		geoInf: function(position) {
 			console.log(JSON.stringify(position));
-			
+
 			plus.storage.setItem("position", JSON.stringify(position));
-			return position;
+			
 		},
 		/*
 		 * 获取位置信息 By Baidu
@@ -35,3 +35,57 @@
 
 	$.Map = Map;
 })(CarMaid);
+
+/*
+ * Banners
+ */
+(function($, mui) {
+
+	//请求Banner成功后的回调方法
+	function onSuccess(data) {
+		if (data.length > 0) {
+			// 获取Home 的 webview对象
+			var HomePage = plus.webview.getWebviewById('templates/Home/index.html');
+			// 触发UpBanners 事件
+			mui.fire(HomePage, 'UpBanners', {
+				data: data
+			});
+			console.log(HomePage.id);
+		}
+	}
+
+	function onError(xhr, type, errorThrown) {
+		mui.toast('网络不佳');
+		console.log(type);
+	}
+	var Banners = {
+		/*
+		 * retry 为重试的次数
+		 */
+		initBanners: function(retry) {
+
+			var url = 'http://120.25.60.120:8080/api/init/getbanners';
+			mui.ajax(url, {
+				dataType: 'json',
+				type: 'get',
+				timeout: 10000,
+				success: function(data) {
+					onSuccess(data);
+				},
+				error: function(xhr, type, errorThrown) {
+
+					--retry;
+					console.log(retry);
+					if (retry > 0) {
+						return Banners.initBanners(retry);
+					}
+					onError(xhr, type, errorThrown);
+
+				}
+			})
+		}
+
+	}
+	$.Banners = Banners;
+
+})(CarMaid, mui);
