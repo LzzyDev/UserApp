@@ -72,6 +72,9 @@ var CarMaid = {};
 
 	function onError(xhr, type, errorThrown) {
 		mui.toast('网络不佳');
+		setTimeout(function() {
+			plus.navigator.closeSplashscreen();
+		}, 1000);
 		console.log(type);
 	}
 	var Banners = {
@@ -99,7 +102,35 @@ var CarMaid = {};
 
 				}
 			})
+		},
+		addBanne: function(index,imgUrl,name,duplicate){
+			var div = document.createElement('div');
+			console.log(duplicate);
+			div.className = duplicate ? 'mui-slider-item mui-slider-item-duplicate':'mui-slider-item';
+			var a = document.createElement('a');
+			a.href = '###';
+			a.id = index;
+			var img = document.createElement('img');
+			img.src = 'http://' + imgUrl;
+			a.appendChild(img);
+			var p = document.createElement('p');
+			p.className = 'mui-slider-title';
+			p.innerText = name;
+			div.appendChild(a);
+			div.appendChild(p);
+			return div;
+		},
+		AddIndicator: function(len){
+			var div = document.createElement('div');
+			div.className = 'mui-slider-indicator mui-text-right';
+			for(var i=0;i<len;i++){
+				var d = document.createElement('div');
+				d.className = i==0? 'mui-indicator mui-active':'mui-indicator';
+				div.appendChild(d);
+			}
+			return div;
 		}
+		
 
 	}
 	$.Banners = Banners;
