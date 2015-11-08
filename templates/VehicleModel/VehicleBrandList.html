@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
 		<link href="../../css/mui.indexedlist.css" rel="stylesheet" />
 		<style type="text/css">
 			html,
@@ -21,6 +22,17 @@
 				background-color: transparent;
 				border-bottom: none;
 			}
+			.error{
+				text-align: center;
+				margin: 0 auto;
+				padding: 30px;
+				color: #8f8f94; 
+				height: 100%;
+				width: 100%;
+				position: fixed;
+				top: 50px;
+				display: none;
+			}
 		</style>
 	</head>
 
@@ -32,11 +44,12 @@
 		</header>
 		<div class="mui-content">
 			<div id="list" class="mui-indexed-list">
-				<div class="mui-indexed-list-search mui-input-row mui-search">
-					<input type="search" class="mui-input-clear mui-indexed-list-search-input" placeholder="搜索品牌">
-				</div>
-			</div>
 
+			</div>
+			<div id="error" class="error" href="###">
+				<span class="mui-icon iconfont icon-sousuojieguomeiyou" style=""></span>
+				点击重新加载！
+			</div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/mui.indexedlist.js" type="text/javascript" charset="utf-8"></script>
@@ -74,16 +87,26 @@
 				slfe.show("slide-in-right", 300);
 				console.log('end');
 			}
+
+			var error = document.getElementById('error');
 			function OnErrorCallback(){
 				
-				
-				
+				console.log('加载品牌失败');
+
+				error.style.display="block";
+
 				var slfe = plus.webview.getWebviewById('VehicleBrandList.html');
 				// 关闭等待框。
 				plus.nativeUI.closeWaiting();
 				// 显示页面
-				slfe.show("slide-in-right", 300);
-			}
+				slfe.show();
+			};
+
+			error.addEventListener('tap',function(){
+				//var error = document.getElementById('error');
+				error.style.display="none"; 
+				CarMaid.Vehicle.GetVehicleBrands(OnSuccessCallback,OnErrorCallback,3);
+			});
 			mui.plusReady(function(){
 				
 				CarMaid.Vehicle.GetVehicleBrands(OnSuccessCallback,OnErrorCallback,3);
