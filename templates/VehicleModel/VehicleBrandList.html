@@ -92,7 +92,7 @@
 			function OnErrorCallback(){
 				
 				console.log('加载品牌失败');
-
+				// 显示 错误提示div
 				error.style.display="block";
 
 				var slfe = plus.webview.getWebviewById('VehicleBrandList.html');
@@ -108,7 +108,7 @@
 				CarMaid.Vehicle.GetVehicleBrands(OnSuccessCallback,OnErrorCallback,3);
 			});
 			mui.plusReady(function(){
-				
+				// 获取汽车品牌
 				CarMaid.Vehicle.GetVehicleBrands(OnSuccessCallback,OnErrorCallback,3);
 
 			})
