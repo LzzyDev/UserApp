@@ -140,8 +140,6 @@ var CarMaid = {};
  */
 (function($, mui) {
 
-
-
 	var vehicle = {
 		GetVehicleBrands: function(onSuccess,onError, retry) {
 			var url = 'http://120.25.60.120:8080/api/Vehicle/GetVehicleBrands';
@@ -200,6 +198,7 @@ var CarMaid = {};
 							//console.log(brand.brandName);
 							var item = document.createElement('li');
 							item.className = 'mui-table-view-cell mui-indexed-list-item';
+							item.id = brand.index;
 							item.setAttribute('data-value', brand.index);
 							item.setAttribute('data-tags', brand.brandId);
 							item.innerText = brand.brandName;
@@ -228,6 +227,66 @@ var CarMaid = {};
 					onError();
 				}
 
+			});
+		},
+		GetVehicleSeries:function(VBID,onSuccess,onError, retry){
+			var url = 'http://120.25.60.120:8080/api/vehicle/GetVehicleSeries?VBID='+VBID;
+			mui.ajax(url,{
+				dataType: 'json',
+				type: 'get',
+				timeout: 10000,
+				success:function(data){
+					
+					// 初始化列表；
+					
+					
+					var segmentedControls = document.getElementById('segmentedControls');
+					segmentedControls.innerHTML = '';
+					for (var i =0; i<data.length;i++) {
+						var a = document.createElement('a');
+						a.className = i == 0? 'mui-control-item mui-active' : 'mui-control-item';
+						a.href = '#content'+i;
+						a.innerText = data[i].vehicleManufacturerName;
+						segmentedControls.appendChild(a);
+					}
+					
+					var segmentedControlContents = document.getElementById('segmentedControlContents');
+					for(var i = 0;i<data.length;i++){
+						// create contentDIV
+						var contentDIV = document.createElement('div');
+						contentDIV.className = i==0?'mui-control-content mui-active':'mui-control-content';
+						contentDIV.id = 'content'+i;
+						//create ul
+						var ul =document.createElement('ul');
+						ul.className = 'mui-table-view';
+						// create li
+						for(var j = 0;j<data[i].vehicleSeries.length;j++){
+							var vsItem = data[i].vehicleSeries[j];
+							//console.log(vsItem);
+							var li = document.createElement('li');
+							li.className = 'mui-table-view-cell';
+							li.id = vsItem.index;
+							li.setAttribute('data-carSreiesId',vsItem.carSreiesId);
+							li.innerText = vsItem.carSeries;
+							
+							ul.appendChild(li);
+						}
+						contentDIV.appendChild(ul);
+						segmentedControlContents.appendChild(contentDIV);
+					}
+					
+					
+					onSuccess();
+				},
+				error:function(xhr, type, errorThrown){
+					--retry;
+					console.log(retry);
+					if (retry > 0) {
+						return vehicle.GetVehicleSeries(VBID,onSuccess,onError, retry);
+					}
+					
+					onError();
+				}
 			});
 		}
 	}

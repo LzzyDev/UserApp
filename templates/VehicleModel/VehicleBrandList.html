@@ -68,15 +68,24 @@
 				
 				// 添加 tap 事件
 				mui('#VehicleBrandList').on('tap', '.mui-table-view-cell', function() {
-					var id = this.getAttribute('data-value');
+					var id = this.id;
 					console.log(id);
 					mui.openWindow({
 						url: 'VehicleManufacturer.html',
 						id: 'VehicleManufacturer.html',
 						show: {
+							autoShow:false,
 							aniShow: 'slide-in-right',
 							duration: 300
 						}
+					});
+					
+					var vsPage = plus.webview.getWebviewById('VehicleManufacturer.html');
+					while(!vsPage){
+						vsPage = plus.webview.getWebviewById('VehicleManufacturer.html');
+					}
+					mui.fire(vsPage,'GetVehicleSeries',{
+						VBID : id
 					});
 				});
 
