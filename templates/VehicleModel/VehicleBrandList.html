@@ -31,7 +31,7 @@
 				<div class="mui-indexed-list-search mui-input-row mui-search">
 					<input type="search" class="mui-input-clear mui-indexed-list-search-input" placeholder="搜索品牌">
 				</div>
-				<div class="mui-indexed-list-bar">
+				<!--<div id="mui-indexed-list-bar" class="mui-indexed-list-bar">
 					<a>A</a>
 					<a>B</a>
 					<a>C</a>
@@ -73,7 +73,6 @@
 						<li data-value="BSD" data-tags="BaoShan" class="mui-table-view-cell mui-indexed-list-item">标志</li>
 						<li data-value="BSD" data-tags="BaoShan" class="mui-table-view-cell mui-indexed-list-item">宝马</li>
 
-
 						<li data-group="C" class="mui-table-view-divider mui-indexed-list-group">C</li>
 						<li data-value="NBS" data-tags="ChangBaiShan" class="mui-table-view-cell mui-indexed-list-item">长城</li>
 						<li data-value="NBS" data-tags="ChangBaiShan" class="mui-table-view-cell mui-indexed-list-item">长安</li>
@@ -81,37 +80,53 @@
 						<li data-group="D" class="mui-table-view-divider mui-indexed-list-group">D</li>
 						<li data-value="DLU" data-tags="DaLi" class="mui-table-view-cell mui-indexed-list-item">大众</li>
 						<li data-value="DLU" data-tags="DaLi" class="mui-table-view-cell mui-indexed-list-item">东风</li>
-
-
 					</ul>
-				</div>
+				</div>-->
 			</div>
 
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/mui.indexedlist.js" type="text/javascript" charset="utf-8"></script>
+		<script src='../../js/CarMaid.js' type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-			mui.ready(function() {
+
+			function callback (){
+
 				var header = document.querySelector('header.mui-bar');
 				var list = document.getElementById('list');
 				//calc hieght
 				list.style.height = (document.body.offsetHeight - header.offsetHeight) + 'px';
 				//create
 				window.indexedList = new mui.IndexedList(list);
-			});
-			mui('#VehicleBrandList').on('tap', '.mui-table-view-cell', function() {
-				var id = this.getAttribute('data-value');
-				console.log(id);
-				mui.openWindow({
-					url: 'VehicleManufacturer.html',
-					id: 'VehicleManufacturer.html',
-					show: {
-						aniShow: 'slide-in-right',
-						duration: 300
-					}
+				
+				// 添加 tap 事件
+				mui('#VehicleBrandList').on('tap', '.mui-table-view-cell', function() {
+					var id = this.getAttribute('data-value');
+					console.log(id);
+					mui.openWindow({
+						url: 'VehicleManufacturer.html',
+						id: 'VehicleManufacturer.html',
+						show: {
+							aniShow: 'slide-in-right',
+							duration: 300
+						}
+					});
 				});
-			});
+
+				var slfe = plus.webview.getWebviewById('VehicleBrandList.html');
+				// 关闭等待框。
+				plus.nativeUI.closeWaiting();
+				// 显示页面
+				slfe.show("slide-in-right", 300);
+				console.log('end');
+			}
+			
+			mui.plusReady(function(){
+				
+				CarMaid.Vehicle.GetVehicleBrands(callback);
+
+			})
 		</script>
 	</body>
 
