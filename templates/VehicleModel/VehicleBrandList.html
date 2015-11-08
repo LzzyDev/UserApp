@@ -17,6 +17,10 @@
 				-webkit-box-shadow: none;
 				box-shadow: none;
 			}
+			.mui-indexed-list{
+				background-color: transparent;
+				border-bottom: none;
+			}
 		</style>
 	</head>
 
@@ -40,7 +44,7 @@
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 
-			function callback (){
+			function OnSuccessCallback (){
 
 				var header = document.querySelector('header.mui-bar');
 				var list = document.getElementById('list');
@@ -70,10 +74,19 @@
 				slfe.show("slide-in-right", 300);
 				console.log('end');
 			}
-			
+			function OnErrorCallback(){
+				
+				
+				
+				var slfe = plus.webview.getWebviewById('VehicleBrandList.html');
+				// 关闭等待框。
+				plus.nativeUI.closeWaiting();
+				// 显示页面
+				slfe.show("slide-in-right", 300);
+			}
 			mui.plusReady(function(){
 				
-				CarMaid.Vehicle.GetVehicleBrands(callback);
+				CarMaid.Vehicle.GetVehicleBrands(OnSuccessCallback,OnErrorCallback,3);
 
 			})
 		</script>

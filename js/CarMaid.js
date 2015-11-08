@@ -103,10 +103,10 @@ var CarMaid = {};
 				}
 			})
 		},
-		addBanne: function(index,imgUrl,name,duplicate){
+		addBanne: function(index, imgUrl, name, duplicate) {
 			var div = document.createElement('div');
 			console.log(duplicate);
-			div.className = duplicate ? 'mui-slider-item mui-slider-item-duplicate':'mui-slider-item';
+			div.className = duplicate ? 'mui-slider-item mui-slider-item-duplicate' : 'mui-slider-item';
 			var a = document.createElement('a');
 			a.href = '###';
 			a.id = index;
@@ -120,12 +120,12 @@ var CarMaid = {};
 			div.appendChild(p);
 			return div;
 		},
-		AddIndicator: function(len){
+		AddIndicator: function(len) {
 			var div = document.createElement('div');
 			div.className = 'mui-slider-indicator mui-text-right';
-			for(var i=0;i<len;i++){
+			for (var i = 0; i < len; i++) {
 				var d = document.createElement('div');
-				d.className = i==0? 'mui-indicator mui-active':'mui-indicator';
+				d.className = i == 0 ? 'mui-indicator mui-active' : 'mui-indicator';
 				div.appendChild(d);
 			}
 			return div;
@@ -138,73 +138,100 @@ var CarMaid = {};
 /*
  * 车型管理
  */
-(function($,mui){
-	
+(function($, mui) {
+
+
+
 	var vehicle = {
-		GetVehicleBrands:function(callback){
+		GetVehicleBrands: function(onSuccess,onError, retry) {
 			var url = 'http://120.25.60.120:8080/api/Vehicle/GetVehicleBrands';
-			mui.get(url,function(data){
-				// 解析 生成为div
-				var parentDIV = document.getElementById('list');
-				
-				// 右侧 首字母导航div
-				var IndexListDIV = document.createElement('div'); 
-				IndexListDIV.id = 'mui-indexed-list-bar';
-				IndexListDIV.className = 'mui-indexed-list-bar';
-				for(var i=0;i<data.length;i++){
-					var a = document.createElement('a');
-					a.innerText = data[i].brandIndex;
-					//console.log(a.innerText);
-					IndexListDIV.appendChild(a);
-				}
-				
-				var IndexAlertDIV = document.createElement('div');
-				IndexAlertDIV.className = 'mui-indexed-list-alert';
-				
-				// 主内容
-				var IndexInnerDIV = document.createElement('div');
-				IndexInnerDIV.className = 'mui-indexed-list-inner';
-				//1 emptyAlertDIV
-				var emptyAlertDIV = document.createElement('div');
-				emptyAlertDIV.className = 'mui-indexed-list-empty-alert';
-				emptyAlertDIV.innerHTML ='没有数据';
-				//2 ul
-				var ul = document.createElement('ul');
-				ul.id ='VehicleBrandList';
-				ul.className = 'mui-table-view';
-				for(var i=0;i<data.length;i++){
-					var tmp = data[i];
-					var liGroup = document.createElement('li');
-					liGroup.setAttribute('data-group',tmp.brandIndex);
-					liGroup.className = 'mui-table-view-divider mui-indexed-list-group';
-					liGroup.innerText = tmp.brandIndex;
-					ul.appendChild(liGroup);
+			mui.ajax(url, {
+				dataType: 'json',
+				type: 'get',
+				timeout: 10000,
+				success: function(data) {
+					// 解析 生成为div
+					var parentDIV = document.getElementById('list');
 					
-					for(var j = 0; j < tmp.brand.length; j++){
-						var brand = tmp.brand[j];
-						//console.log(brand.brandName);
-						var item = document.createElement('li');
-						item.className = 'mui-table-view-cell mui-indexed-list-item';
-						item.setAttribute('data-value',brand.index);
-						item.setAttribute('data-tags',brand.brandId);
-						item.innerText = brand.brandName;
-						
-						ul.appendChild(item);
+					// 搜索 div
+					var searchDIV = document.createElement('div');
+					searchDIV.className = 'mui-indexed-list-search mui-input-row mui-search';
+					var searchInput = document.createElement('input');
+					searchInput.type = 'search';
+					searchInput.className = 'mui-input-clear mui-indexed-list-search-input';
+					searchInput.placeholder = '搜索品牌';
+					searchDIV.appendChild(searchInput);
+
+					// 右侧 首字母导航div
+					var IndexListDIV = document.createElement('div');
+					IndexListDIV.id = 'mui-indexed-list-bar';
+					IndexListDIV.className = 'mui-indexed-list-bar';
+					for (var i = 0; i < data.length; i++) {
+						var a = document.createElement('a');
+						a.innerText = data[i].brandIndex;
+						//console.log(a.innerText);
+						IndexListDIV.appendChild(a);
 					}
+
+					var IndexAlertDIV = document.createElement('div');
+					IndexAlertDIV.className = 'mui-indexed-list-alert';
+
+					// 主内容
+					var IndexInnerDIV = document.createElement('div');
+					IndexInnerDIV.className = 'mui-indexed-list-inner';
+					//1 emptyAlertDIV
+					var emptyAlertDIV = document.createElement('div');
+					emptyAlertDIV.className = 'mui-indexed-list-empty-alert';
+					emptyAlertDIV.innerHTML = '没有数据';
+					//2 ul
+					var ul = document.createElement('ul');
+					ul.id = 'VehicleBrandList';
+					ul.className = 'mui-table-view';
+					for (var i = 0; i < data.length; i++) {
+						var tmp = data[i];
+						var liGroup = document.createElement('li');
+						liGroup.setAttribute('data-group', tmp.brandIndex);
+						liGroup.className = 'mui-table-view-divider mui-indexed-list-group';
+						liGroup.innerText = tmp.brandIndex;
+						ul.appendChild(liGroup);
+
+						for (var j = 0; j < tmp.brand.length; j++) {
+							var brand = tmp.brand[j];
+							//console.log(brand.brandName);
+							var item = document.createElement('li');
+							item.className = 'mui-table-view-cell mui-indexed-list-item';
+							item.setAttribute('data-value', brand.index);
+							item.setAttribute('data-tags', brand.brandId);
+							item.innerText = brand.brandName;
+
+							ul.appendChild(item);
+						}
+					}
+					IndexInnerDIV.appendChild(emptyAlertDIV);
+					IndexInnerDIV.appendChild(ul);
+
+					parentDIV.appendChild(searchDIV);
+					parentDIV.appendChild(IndexListDIV);
+					parentDIV.appendChild(IndexAlertDIV);
+					parentDIV.appendChild(IndexInnerDIV);
+					// 执行回调函数 初始化 页面
+					onSuccess();
+
+				},
+				error: function(xhr, type, errorThrown) {
+					--retry;
+					console.log(retry);
+					if (retry > 0) {
+						return vehicle.GetVehicleBrands(onSuccess,onError, retry);
+					}
+					
+					onError();
 				}
-				IndexInnerDIV.appendChild(emptyAlertDIV);
-				IndexInnerDIV.appendChild(ul);
-				
-				parentDIV.appendChild(IndexListDIV);
-				parentDIV.appendChild(IndexAlertDIV);
-				parentDIV.appendChild(IndexInnerDIV);
-				// 执行回调函数 初始化 页面
-				callback();
-				
-			},'json');
+
+			});
 		}
 	}
-	
+
 	$.Vehicle = vehicle;
-	
-})(CarMaid,mui)
+
+})(CarMaid, mui)
