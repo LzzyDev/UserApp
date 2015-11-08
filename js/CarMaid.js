@@ -136,7 +136,7 @@ var CarMaid = {};
 })(CarMaid, mui);
 
 /*
- * 
+ * 车型管理
  */
 (function($,mui){
 	
