@@ -239,19 +239,24 @@ var CarMaid = {};
 					
 					// 初始化列表；
 					
+					// 改变标题
+					var brandName = document.getElementById('brandName');
+					brandName.innerText = data.brandName;
 					
+					// 左侧 汽车厂家列表；
 					var segmentedControls = document.getElementById('segmentedControls');
 					segmentedControls.innerHTML = '';
-					for (var i =0; i<data.length;i++) {
+					for (var i =0; i<data.vehicleSeries.length;i++) {
 						var a = document.createElement('a');
 						a.className = i == 0? 'mui-control-item mui-active' : 'mui-control-item';
 						a.href = '#content'+i;
-						a.innerText = data[i].vehicleManufacturerName;
+						a.innerText = data.vehicleSeries[i].manufacturerName;
 						segmentedControls.appendChild(a);
 					}
 					
+					// 右侧 车系列表；
 					var segmentedControlContents = document.getElementById('segmentedControlContents');
-					for(var i = 0;i<data.length;i++){
+					for(var i = 0;i<data.vehicleSeries.length;i++){
 						// create contentDIV
 						var contentDIV = document.createElement('div');
 						contentDIV.className = i==0?'mui-control-content mui-active':'mui-control-content';
@@ -260,8 +265,8 @@ var CarMaid = {};
 						var ul =document.createElement('ul');
 						ul.className = 'mui-table-view';
 						// create li
-						for(var j = 0;j<data[i].vehicleSeries.length;j++){
-							var vsItem = data[i].vehicleSeries[j];
+						for(var j = 0;j<data.vehicleSeries[i].vehicleSeries.length;j++){
+							var vsItem = data.vehicleSeries[i].vehicleSeries[j];
 							//console.log(vsItem);
 							var li = document.createElement('li');
 							li.className = 'mui-table-view-cell';
@@ -288,7 +293,69 @@ var CarMaid = {};
 					onError();
 				}
 			});
+		},
+		GetVehicleModel:function(vsid,onSuccess,onError, retry){
+			var url = "http://120.25.60.120:8080/api/vehicle/GetVehicleModel?vsid=" + vsid;
+			mui.ajax(url,{
+				dataType: 'json',
+				type: 'get',
+				timeout: 10000,
+				success:function(data){
+					// 修改 标题
+					var seriesName = document.getElementById('seriesName');
+					seriesName.innerText = data.seriesName;
+					
+					// 左侧 年份 导航列表
+					var segmentedControls = document.getElementById('segmentedControls');
+					for(var i = 0; i< data.vehicleModel.length; i++){
+						var a = document.createElement('a');
+						a.className = i == 0? 'mui-control-item mui-active' : 'mui-control-item';
+						a.href = '#content'+i;
+						a.innerText = data.vehicleModel[i].year;
+						segmentedControls.appendChild(a);
+					}
+					
+					
+					// 右侧 车型数据列表
+					var segmentedControlContents = document.getElementById('segmentedControlContents');
+					for(var i = 0;i<data.vehicleModel.length;i++){
+						// create contentDIV
+						var contentDIV = document.createElement('div');
+						contentDIV.className = i==0?'mui-control-content mui-active':'mui-control-content';
+						contentDIV.id = 'content'+i;
+						//create ul
+						var ul =document.createElement('ul');
+						ul.className = 'mui-table-view';
+						// create li
+						for(var j = 0;j<data.vehicleModel[i].model.length;j++){
+							var vsItem = data.vehicleModel[i].model[j];
+							//console.log(vsItem);
+							var li = document.createElement('li');
+							li.className = 'mui-table-view-cell';
+							li.id = vsItem.index;
+							li.innerText = vsItem.vehicleModelName;
+							li.setAttribute('data-imageUrl',vsItem.imageUrl);
+							
+							ul.appendChild(li);
+						}
+						contentDIV.appendChild(ul);
+						segmentedControlContents.appendChild(contentDIV);
+					}
+								
+					onSuccess();
+				},
+				error:function(xhr, type, errorThrown){
+					--retry;
+					console.log(retry);
+					if (retry > 0) {
+						return vehicle.GetVehicleModel(vsid,onSuccess,onError, retry);
+					}
+					
+					onError();
+				}
+			});
 		}
+		
 	}
 
 	$.Vehicle = vehicle;

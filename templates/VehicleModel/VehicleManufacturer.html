@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<link href="../../css/mui.min.css" rel="stylesheet" />
-		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
 		<style>
 			.mui-row.mui-fullscreen>[class*="mui-col-"] {
 				height: 100%;
@@ -23,11 +23,11 @@
 			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
 				background-color: #fff;
 			}
-			.error{
+			.error {
 				text-align: center;
 				margin: 0 auto;
 				padding: 30px;
-				color: #8f8f94; 
+				color: #8f8f94;
 				height: 100%;
 				width: 100%;
 				position: fixed;
@@ -40,7 +40,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">车系<span style="font-size: 14px; margin-left: 5px;"><!--（<span>宝马</span>）--></span></h1>
+			<h1 class="mui-title">车系<span style="font-size: 14px; margin-left: 5px;"><span id="brandName"></span></span></h1>
 		</header>
 		<div class="mui-content mui-row mui-fullscreen">
 
@@ -50,12 +50,11 @@
 			</div>
 			<div id="segmentedControlContents" class="mui-col-xs-9" style="border-left: 1px solid #c8c7cc;">
 			</div>
-			
+
 			<div id="error" class="error" href="###">
-				<span class="mui-icon iconfont icon-sousuojieguomeiyou" style=""></span>
-				点击重新加载！
+				<span class="mui-icon iconfont icon-sousuojieguomeiyou" style=""></span> 点击重新加载！
 			</div>
-			
+
 		</div>
 
 		<script src="../../js/mui.min.js"></script>
@@ -64,13 +63,34 @@
 			mui.init();
 			var VBID = '';
 			var error = document.getElementById('error');
-			
-			function OnSuccessCallback(){
-				
+
+			function OnSuccessCallback() {
 				var segmentedControls = document.getElementById('segmentedControls');
 				segmentedControls.style.display = 'block';
 				var segmentedControlContents = document.getElementById('segmentedControlContents');
 				segmentedControlContents.style.display = 'block';
+				mui('.mui-table-view').on('tap', '.mui-table-view-cell', function() {
+					var id = this.id;
+					console.log(id);
+					mui.openWindow({
+						url: 'VehicleModel.html',
+						id: 'VehicleModel.html',
+						show: {
+							autoShow:false,
+							aniShow: 'slide-in-right',
+							duration: 300
+						}
+					});
+					
+					var vmPage = plus.webview.getWebviewById('VehicleModel.html');
+					while(!vmPage){
+						vmPage = plus.webview.getWebviewById('VehicleModel.html');
+					}
+					mui.fire(vmPage,'GetVehicleModel',{
+						VSID : id
+					});
+					
+				});
 				var slfe = plus.webview.getWebviewById('VehicleManufacturer.html');
 				// 关闭等待框。
 				plus.nativeUI.closeWaiting();
@@ -78,50 +98,31 @@
 				slfe.show("slide-in-right", 300);
 			}
 
-			function OnErrorCallback(){
+			function OnErrorCallback() {
 				console.log('error');
-				
 				// 隐藏 列表div
 				var segmentedControls = document.getElementById('segmentedControls');
 				segmentedControls.style.display = 'none';
 				var segmentedControlContents = document.getElementById('segmentedControlContents');
 				segmentedControlContents.style.display = 'none';
-				
 				// 显示 错误提示div
-				error.style.display="block";
+				error.style.display = "block";
 				var slfe = plus.webview.getWebviewById('VehicleManufacturer.html');
 				// 关闭等待框。
 				plus.nativeUI.closeWaiting();
 				// 显示页面
 				slfe.show();
 			}
-
-			error.addEventListener('tap',function(){
+			error.addEventListener('tap', function() {
 				//var error = document.getElementById('error');
-				error.style.display="none"; 
-				CarMaid.Vehicle.GetVehicleSeries(VBID,OnSuccessCallback,OnErrorCallback,3);
+				error.style.display = "none";
+				CarMaid.Vehicle.GetVehicleSeries(VBID, OnSuccessCallback, OnErrorCallback, 3);
 			});
-			
-			window.addEventListener('GetVehicleSeries',function(e){
+			window.addEventListener('GetVehicleSeries', function(e) {
 				VBID = e.detail.VBID;
 				console.log(VBID);
-				mui.plusReady(function(){
-					CarMaid.Vehicle.GetVehicleSeries(VBID,OnSuccessCallback,OnErrorCallback,3);
-				});
-			});
-			
-			
-			
-			mui('.mui-table-view').on('tap', '.mui-table-view-cell', function() {
-				var id = this.getAttribute('data-value');
-				console.log(id);
-				mui.openWindow({
-					url: 'VehicleModel.html',
-					id: 'VehicleModel.html',
-					show: {
-						aniShow: 'slide-in-right',
-						duration: 300
-					}
+				mui.plusReady(function() {
+					CarMaid.Vehicle.GetVehicleSeries(VBID, OnSuccessCallback, OnErrorCallback, 3);
 				});
 			});
 		</script>
