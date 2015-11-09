@@ -6,6 +6,20 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-checkbox input[type=checkbox], .mui-radio input[type=radio]{
+				position: absolute;
+				top:-30px;
+				right: -50px;
+			}
+			.mui-table-view-cell{
+				/*width: 90%;*/
+				/*float: right;*/
+			}
+			.mui-table-view-cell>.mui-slider-handle{
+				/*margin: -11px -15px -11px 30px;*/
+			}
+		</style>
 	</head>
 
 	<body>
@@ -19,7 +33,42 @@
 			</a>
 		</header>
 		<div id="Content" class="mui-content">
-
+			<ul class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell">
+					
+					<div class="mui-slider-right mui-disabled">
+						<a class="mui-btn mui-btn-red">删除</a>
+					</div>
+					<div class="mui-slider-handle">
+						<img class="mui-media-object mui-pull-left" src="../../images/60x60.gif" />
+						<div class="mui-media-body">
+							宝马车主
+							<p class="mui-ellipsis">经过朋友介绍车事帮比4S便宜很多而且方便，家旁边就有好几家特约店，车都开了6年多了但开的比较少才45000公里，购买配件很简单选择自助保养都有推荐的，一气呵成在线支付成功，第二天就收到了，应该都是正品吧，大品牌信得过。</p>
+						</div>
+						
+						<div class="mui-radio mui-right">
+							<input type="radio" name="12" id="" value="" />
+						</div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					
+					<div class="mui-slider-right mui-disabled">
+						<a class="mui-btn mui-btn-red">删除</a>
+					</div>
+					<div class="mui-slider-handle">
+						<img class="mui-media-object mui-pull-left" src="../../images/60x60.gif" />
+						<div class="mui-media-body">
+							宝马车主
+							<p class="mui-ellipsis">经过朋友介绍车事帮比4S便宜很多而且方便，家旁边就有好几家特约店，车都开了6年多了但开的比较少才45000公里，购买配件很简单选择自助保养都有推荐的，一气呵成在线支付成功，第二天就收到了，应该都是正品吧，大品牌信得过。</p>
+						</div>
+						
+						<div class="mui-radio mui-right">
+							<input type="radio" name="12" id="" value="" />
+						</div>
+					</div>
+				</li>
+			</ul>
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript" charset="utf-8">
@@ -30,7 +79,7 @@
 						url: 'VehicleBrandList.html',
 						id: 'VehicleBrandList.html',
 						show: {
-							autoShow:false,
+							autoShow: false,
 							aniShow: 'slide-in-right',
 							duration: 300,
 						}
