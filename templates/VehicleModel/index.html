@@ -34,7 +34,7 @@
 			</a>
 		</header>
 		<div id="Content" class="mui-content">
-			<!--<form id="VehileModelCollection" class="mui-table-view">
+			<form id="VehileModelCollection" class="mui-table-view">
 				<div id="vmid" class="mui-table-view-cell mui-radio">
 					<div class="mui-slider-right mui-disabled">
 						<a data-id = "vmid" class="mui-btn mui-btn-yellow mui-icon mui-icon-compose"></a>
@@ -49,23 +49,11 @@
 						<input name="radio1" type="radio">
 					</div>
 				</div>
-			</form>-->
+			</form>
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			mui.init({
-				gestureConfig: {
-					doubletap: true
-				},
-				subpages: [{
-					url: 'index_subPage.html',
-					id: 'index_subPage.html',
-					styles: {
-						top: '45px',
-						bottom: '0px',
-					}
-				}]
-			});
+			mui.init();
 
 			mui.plusReady(function() {
 				document.getElementById('addVehileModel').addEventListener('tap', function() {
