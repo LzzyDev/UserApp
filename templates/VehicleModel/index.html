@@ -10,14 +10,14 @@
 			.mui-table-view-cell > .mui-slider-handle {
 				margin-right: 40px;
 			}
-			.mui-table-view-cell.mui-checkbox input[type=checkbox], .mui-table-view-cell.mui-radio input[type=radio] {
+			.mui-table-view-cell.mui-checkbox input[type=checkbox],
+			.mui-table-view-cell.mui-radio input[type=radio] {
 				right: -25px;
 			}
-			
-			.mui-input-group .mui-input-row{
+			.mui-input-group .mui-input-row {
 				height: auto;
 			}
-			.mui-media-body p{
+			.mui-media-body p {
 				margin-top: 5px;
 			}
 		</style>
@@ -34,7 +34,7 @@
 			</a>
 		</header>
 		<div id="Content" class="mui-content">
-			<form id="VehileModelCollection" class="mui-table-view">
+			<!--<form id="VehileModelCollection" class="mui-table-view">
 				<div id="vmid" class="mui-table-view-cell mui-radio">
 					<div class="mui-slider-right mui-disabled">
 						<a data-id = "vmid" class="mui-btn mui-btn-yellow mui-icon mui-icon-compose"></a>
@@ -49,11 +49,24 @@
 						<input name="radio1" type="radio">
 					</div>
 				</div>
-			</form>
+			</form>-->
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			mui.init();
+			mui.init({
+				gestureConfig: {
+					doubletap: true
+				},
+				subpages: [{
+					url: 'index_subPage.html',
+					id: 'index_subPage.html',
+					styles: {
+						top: '45px',
+						bottom: '0px',
+					}
+				}]
+			});
+
 			mui.plusReady(function() {
 				document.getElementById('addVehileModel').addEventListener('tap', function() {
 					mui.openWindow({
@@ -67,15 +80,9 @@
 					});
 				});
 			});
-			mui('.mui-table-view').on('tap', '.mui-media-body', function() {
+			mui('#VehileModelCollection').on('tap', '.mui-table-view-cell', function() {
 				console.log('点击内容');
 			});
-			mui('.mui-radio').on('tap', 'input', function() {
-				console.log('点击了radio');
-				console.log(this.checked);
-				this.checked = !this.checked;
-				console.log(this.checked);
-			})
 		</script>
 	</body>
 

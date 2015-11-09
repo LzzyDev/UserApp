@@ -114,6 +114,13 @@
 						showMenu: false
 					});
 					if (subWebview.getURL() != href) {
+						
+						// 关闭公共子页面的子页面
+						var arrsub = template.children()[0].children();
+						for(var i = 0;i<arrsub.length;i++){
+							console.log(arrsub[i].id);
+							arrsub[i].close('none');
+						}
 						subWebview.loadURL(href);
 					} else {
 						subWebview.show();

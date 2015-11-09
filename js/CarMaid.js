@@ -354,8 +354,11 @@ var CarMaid = {};
 					onError();
 				}
 			});
+		},
+		InitVehicleModel:function(){
+			
 		}
-		
+	
 	}
 
 	$.Vehicle = vehicle;
