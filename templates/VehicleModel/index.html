@@ -20,6 +20,31 @@
 			.mui-media-body p {
 				margin-top: 5px;
 			}
+			.mui-content>.mui-table-view:first-child{
+				margin-top: 0px;
+			}
+			.error{
+				text-align: center;
+				margin: 0 auto;
+				padding: 30px;
+				color: #8f8f94; 
+				height: 100%;
+				width: 100%;
+				position: fixed;
+				top: 50px;
+				display: none;
+			}
+			.loading{
+				text-align: center;
+				margin: 0 auto;
+				padding: 30px;
+				color: #8f8f94; 
+				height: 100%;
+				width: 100%;
+				position: fixed;
+				top: 50px;
+				display: block;
+			}
 		</style>
 	</head>
 
@@ -35,7 +60,7 @@
 		</header>
 		<div id="Content" class="mui-content">
 			<form id="VehileModelCollection" class="mui-table-view">
-				<div id="vmid" class="mui-table-view-cell mui-radio">
+				<!--<div id="vmid" class="mui-table-view-cell mui-radio">
 					<div class="mui-slider-right mui-disabled">
 						<a data-id = "vmid" class="mui-btn mui-btn-yellow mui-icon mui-icon-compose"></a>
 						<a data-id = 'vmid' class="mui-btn mui-btn-red mui-icon mui-icon-trash"></a>
@@ -48,13 +73,44 @@
 						</div>
 						<input name="radio1" type="radio">
 					</div>
-				</div>
+				</div>-->
 			</form>
+			
+			<div id="error" class="error" href="###">
+				<span class="mui-icon iconfont icon-sousuojieguomeiyou" style=""></span>
+				点击重新加载！
+			</div>
+			
+			<div id="loading" class="loading" href="###">
+				<span class="mui-spinner" style=""></span>
+			</div>
+			
 		</div>
 		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/CarMaid.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-
+			var error = document.getElementById('error');
+			var loading = document.getElementById('loading');
+			
+			function OnSuccessCallback(){
+				
+				
+				loading.style.display = 'none';
+				getVehicleModelForCookies();
+			}
+			function OnErrorCallback(){
+				
+				
+				loading.style.display = 'none';
+				//error.style.display = 'bli'
+				getVehicleModelForCookies();
+			}
+			// 获取cookies 中的车型。
+			function getVehicleModelForCookies(){
+				
+			}
+			
 			mui.plusReady(function() {
 				document.getElementById('addVehileModel').addEventListener('tap', function() {
 					mui.openWindow({
@@ -66,11 +122,14 @@
 							duration: 300,
 						}
 					});
-				});
+				}); 
+				
+				CarMaid.Vehicle.InitVehicleModel(OnSuccessCallback,OnErrorCallback,3);
 			});
 			mui('#VehileModelCollection').on('tap', '.mui-table-view-cell', function() {
 				console.log('点击内容');
 			});
+
 		</script>
 	</body>
 

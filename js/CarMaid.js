@@ -355,12 +355,55 @@ var CarMaid = {};
 				}
 			});
 		},
-		InitVehicleModel:function(){
-			
+		InitVehicleModel:function(onSuccess,onError, retry){
+			var url = 'http://www.google.com';
+			mui.ajax(url,{
+				dataType: 'json',
+				type: 'get',
+				timeout: 10000,
+				success:function(){
+					
+					
+					onSuccess();
+					console.log('success');
+				},
+				error:function(){
+					--retry;
+					console.log(retry);
+					if (retry > 0) {
+						return vehicle.InitVehicleModel(onSuccess,onError, retry);
+					}
+					
+					onError();
+				}
+			})
 		}
 	
 	}
 
 	$.Vehicle = vehicle;
 
-})(CarMaid, mui)
+})(CarMaid, mui);
+
+/*
+ * Cookies
+ */
+(function($,mui){
+	var cookies = {
+		/*
+		 * 
+		 */
+		setCookies:function(url,value,time){
+			
+		},
+		getCookies:function(){
+			
+		}
+	}
+	
+	$.Cookies = cookies;
+})(CarMaid,mui);
+
+
+
+
