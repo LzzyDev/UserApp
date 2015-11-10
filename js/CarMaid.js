@@ -63,10 +63,14 @@ var CarMaid = {};
 			// 获取Home 的 webview对象
 			var HomePage = plus.webview.getWebviewById('templates/Home/index.html');
 			// 触发UpBanners 事件
-			mui.fire(HomePage, 'UpBanners', {
-				data: data
-			});
-			console.log(HomePage.id);
+			HomePage.onloaded = function(){
+				console.log('HomePage加载完成');
+				console.log('homePage.id:' + HomePage.id);
+				mui.fire(HomePage, 'UpBanners', {
+					data: data
+				});
+				console.log(HomePage.id);
+			}
 		}
 	}
 
@@ -82,22 +86,24 @@ var CarMaid = {};
 		 * retry 为重试的次数
 		 */
 		initBanners: function(retry) {
-
 			var url = 'http://120.25.60.120:8080/api/init/getbanners';
 			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
 				timeout: 10000,
 				success: function(data) {
+					console.log('banners ok');
 					onSuccess(data);
 				},
 				error: function(xhr, type, errorThrown) {
-
+					
 					--retry;
-					console.log(retry);
+					//console.log(retry);
 					if (retry > 0) {
+						console.log('banners error');
 						return Banners.initBanners(retry);
 					}
+
 					onError(xhr, type, errorThrown);
 
 				}

@@ -58,7 +58,7 @@
 			mui.init();
 
 			function OnSuccessCallback (){
-
+				
 				var header = document.querySelector('header.mui-bar');
 				var list = document.getElementById('list');
 				//calc hieght
@@ -68,6 +68,7 @@
 				
 				// 添加 tap 事件
 				mui('#VehicleBrandList').on('tap', '.mui-table-view-cell', function() {
+					console.log('点击了车牌');
 					var id = this.id;
 					console.log(id);
 					mui.openWindow({

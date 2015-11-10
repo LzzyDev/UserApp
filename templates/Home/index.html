@@ -103,6 +103,7 @@
 			console.log(slider[0]);
 			 // 添加监听更新Banners 事件
 			window.addEventListener('UpBanners', function(e) {
+				console.log('UpBanners Even');
 				var banners = e.detail.data;
 				if (banners && banners.length > 0) {
 					// 创建 sliderGroup div
@@ -130,6 +131,7 @@
 					slider[0].innerHTML = "";
 					slider[0].appendChild(sliderGroup);
 					slider[0].appendChild(IndicatorDIV);
+					console.log(slider[0].innerHTML);
 					// 自动播放
 					slider.slider({
 						interval: 5000
