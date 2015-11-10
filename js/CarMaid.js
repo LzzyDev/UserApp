@@ -208,7 +208,7 @@ var CarMaid = {};
 							item.setAttribute('data-value', brand.index);
 							item.setAttribute('data-tags', brand.brandId);
 							item.innerText = brand.brandName;
-
+							
 							ul.appendChild(item);
 						}
 					}

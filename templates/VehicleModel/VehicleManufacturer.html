@@ -79,15 +79,10 @@
 							autoShow:false,
 							aniShow: 'slide-in-right',
 							duration: 300
+						},
+						extras:{
+							VSID:id
 						}
-					});
-					
-					var vmPage = plus.webview.getWebviewById('VehicleModel.html');
-					while(!vmPage){
-						vmPage = plus.webview.getWebviewById('VehicleModel.html');
-					}
-					mui.fire(vmPage,'GetVehicleModel',{
-						VSID : id
 					});
 					
 				});
@@ -117,13 +112,11 @@
 				//var error = document.getElementById('error');
 				error.style.display = "none";
 				CarMaid.Vehicle.GetVehicleSeries(VBID, OnSuccessCallback, OnErrorCallback, 3);
-			});
-			window.addEventListener('GetVehicleSeries', function(e) {
-				VBID = e.detail.VBID;
-				console.log(VBID);
-				mui.plusReady(function() {
-					CarMaid.Vehicle.GetVehicleSeries(VBID, OnSuccessCallback, OnErrorCallback, 3);
-				});
+			})	
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+				VBID = self.VBID;
+				CarMaid.Vehicle.GetVehicleSeries(VBID, OnSuccessCallback, OnErrorCallback, 3);
 			});
 		</script>
 	</body>

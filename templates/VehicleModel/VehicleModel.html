@@ -98,13 +98,11 @@
 				error.style.display = "none";
 				CarMaid.Vehicle.GetVehicleModel(VSID, OnSuccessCallback, OnErrorCallback, 3);
 			});
-			document.addEventListener('GetVehicleModel',function(e){
-				VSID = e.detail.VSID;
-				console.log(VSID);
-				mui.plusReady(function() {
-					CarMaid.Vehicle.GetVehicleModel(VSID, OnSuccessCallback, OnErrorCallback, 3);
-				});
-			})
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+				var VSID = self.VSID;
+				CarMaid.Vehicle.GetVehicleModel(VSID, OnSuccessCallback, OnErrorCallback, 3);
+			});
 			
 		</script>
 	</body>

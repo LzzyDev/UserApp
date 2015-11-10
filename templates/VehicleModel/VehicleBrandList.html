@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<link href="../../css/mui.min.css" rel="stylesheet" />
-		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
 		<link href="../../css/mui.indexedlist.css" rel="stylesheet" />
 		<style type="text/css">
 			html,
@@ -18,15 +18,15 @@
 				-webkit-box-shadow: none;
 				box-shadow: none;
 			}
-			.mui-indexed-list{
+			.mui-indexed-list {
 				background-color: transparent;
 				border-bottom: none;
 			}
-			.error{
+			.error {
 				text-align: center;
 				margin: 0 auto;
 				padding: 30px;
-				color: #8f8f94; 
+				color: #8f8f94;
 				height: 100%;
 				width: 100%;
 				position: fixed;
@@ -47,8 +47,7 @@
 
 			</div>
 			<div id="error" class="error" href="###">
-				<span class="mui-icon iconfont icon-sousuojieguomeiyou" style=""></span>
-				点击重新加载！
+				<span class="mui-icon iconfont icon-sousuojieguomeiyou" style=""></span> 点击重新加载！
 			</div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
@@ -56,72 +55,67 @@
 		<script src='../../js/CarMaid.js' type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-
-			function OnSuccessCallback (){
-				
+			function OnSuccessCallback() {
+				console.log('callback');
+				// 添加 tap 事件
 				var header = document.querySelector('header.mui-bar');
 				var list = document.getElementById('list');
 				//calc hieght
 				list.style.height = (document.body.offsetHeight - header.offsetHeight) + 'px';
 				//create
 				window.indexedList = new mui.IndexedList(list);
-				
-				// 添加 tap 事件
 				mui('#VehicleBrandList').on('tap', '.mui-table-view-cell', function() {
-					console.log('点击了车牌');
 					var id = this.id;
 					console.log(id);
 					mui.openWindow({
 						url: 'VehicleManufacturer.html',
 						id: 'VehicleManufacturer.html',
 						show: {
-							autoShow:false,
+							autoShow: false,
 							aniShow: 'slide-in-right',
 							duration: 300
+						},
+						extras:{
+							VBID:id
 						}
-					});
-					
-					var vsPage = plus.webview.getWebviewById('VehicleManufacturer.html');
-					while(!vsPage){
-						vsPage = plus.webview.getWebviewById('VehicleManufacturer.html');
-					}
-					mui.fire(vsPage,'GetVehicleSeries',{
-						VBID : id
-					});
+					});	
 				});
-
-				var slfe = plus.webview.getWebviewById('VehicleBrandList.html');
+				var self = plus.webview.getWebviewById('VehicleBrandList.html');
 				// 关闭等待框。
 				plus.nativeUI.closeWaiting();
 				// 显示页面
-				slfe.show("slide-in-right", 300);
+				self.show("slide-in-right", 300);
 				console.log('end');
 			}
-
 			var error = document.getElementById('error');
-			function OnErrorCallback(){
-				
+
+			function OnErrorCallback() {
 				console.log('加载品牌失败');
 				// 显示 错误提示div
-				error.style.display="block";
-
-				var slfe = plus.webview.getWebviewById('VehicleBrandList.html');
+				error.style.display = "block";
+				var self = plus.webview.getWebviewById('VehicleBrandList.html');
 				// 关闭等待框。
 				plus.nativeUI.closeWaiting();
 				// 显示页面
-				slfe.show();
+				self.show();
 			};
-
-			error.addEventListener('tap',function(){
+			error.addEventListener('tap', function() {
 				//var error = document.getElementById('error');
-				error.style.display="none"; 
-				CarMaid.Vehicle.GetVehicleBrands(OnSuccessCallback,OnErrorCallback,3);
+				error.style.display = "none";
+				CarMaid.Vehicle.GetVehicleBrands(OnSuccessCallback, OnErrorCallback, 3);
 			});
-			mui.plusReady(function(){
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				console.log(self.id);
+				//self.onloaded = function(){
 				// 获取汽车品牌
-				CarMaid.Vehicle.GetVehicleBrands(OnSuccessCallback,OnErrorCallback,3);
-
-			})
+				CarMaid.Vehicle.GetVehicleBrands(OnSuccessCallback, OnErrorCallback, 3);
+				//}
+			});
+//			mui.back = function(){
+//				var self = plus.webview.currentWebview();
+//				self.close('slide-out-right',300);
+//			}
 		</script>
 	</body>
 
