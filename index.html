@@ -105,7 +105,34 @@
 			var initTemplates = function() {
 				getTemplate('default', 'template.html');
 			};
+			 //请求Banner成功后的回调方法
+			function onSuccess(data) {
+				if (data.length > 0) {
+					// 获取Home 的 webview对象
+					var HomePage = plus.webview.getWebviewById('templates/Home/index.html');
+					// 触发UpBanners 事件
+					console.log(HomePage.id);
 
+					HomePage.onloaded = function() {
+
+						console.log('HomePage加载完成');
+						console.log('homePage.id:' + HomePage.id);
+						mui.fire(HomePage, 'UpBanners', {
+							data: data
+						});
+						console.log(HomePage.id);
+					};
+				}
+			}
+
+			function onError(xhr, type, errorThrown) {
+				mui.toast('网络不佳');
+				setTimeout(function() {
+					plus.navigator.closeSplashscreen();
+				}, 2000);
+				//plus.navigator.closeSplashscreen();
+				console.log(type);
+			}
 			mui.plusReady(function() {
 				// 判断是否加载欢迎页
 				//读取本地存储，检查是否为首次启动
@@ -113,9 +140,9 @@
 				if (showGuide == plus.runtime.version) {
 					//有值，说明已经显示过了，无需显示
 					// 延时关闭启动页
-//					setTimeout(function() {
-//						plus.navigator.closeSplashscreen();
-//					}, 1000);
+					//					setTimeout(function() {
+					//						plus.navigator.closeSplashscreen();
+					//					}, 1000);
 					initTemplates();
 				} else {
 					//显示启动导航
@@ -161,12 +188,11 @@
 					});
 				}, 200);
 				// 获取当前设备位置
-
 				CarMaid.Map.getPosByBaidu(CarMaid.Map.geoInf);
-
 				// initBanners 
-				CarMaid.Banners.initBanners(3);
+				CarMaid.Banners.initBanners(onSuccess,onError,3);
 				//initBanners();
+				//CarMaid.Cookies.setCookies('chshibang','test=123; expires=Friday,24-Jan-2015 16:24:36 GMT; path=/');
 			});
 			 //当前激活选项
 			var activeTab = subpages[0];

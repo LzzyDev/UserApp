@@ -93,7 +93,7 @@
 			</ul>
 		</div>
 
-		<script src="../../js/mui.js"></script>
+		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/MenuEvent.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/CarMaid.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
@@ -132,10 +132,16 @@
 					slider[0].appendChild(sliderGroup);
 					slider[0].appendChild(IndicatorDIV);
 					console.log(slider[0].innerHTML);
-					// 自动播放
-					slider.slider({
-						interval: 5000
-					});
+					// 自动播放 cao 刚才还正常
+					setTimeout(function(){
+						slider.slider({
+							interval: 5000
+						});
+					},1000);
+//					slider.slider({
+//						interval: 5000
+//					});
+					
 				}
 				// 更新完后关闭启动页
 				setTimeout(function() {

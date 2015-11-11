@@ -57,40 +57,12 @@ var CarMaid = {};
  */
 (function($, mui) {
 
-	//请求Banner成功后的回调方法
-	function onSuccess(data) {
-		if (data.length > 0) {
-			// 获取Home 的 webview对象
-			var HomePage = plus.webview.getWebviewById('templates/Home/index.html');
-			// 触发UpBanners 事件
-			console.log(HomePage.id);
-			HomePage.onloaded = function(){
-				console.log('HomePage加载完成');
-				console.log('homePage.id:' + HomePage.id);
-				mui.fire(HomePage, 'UpBanners', {
-					data: data
-				});
-				console.log(HomePage.id);
-				return;
-			};
-			mui.fire(HomePage, 'UpBanners', {
-				data: data
-			});
-		}
-	}
 
-	function onError(xhr, type, errorThrown) {
-		mui.toast('网络不佳');
-		setTimeout(function() {
-			plus.navigator.closeSplashscreen();
-		}, 2000);
-		console.log(type);
-	}
 	var Banners = {
 		/*
 		 * retry 为重试的次数
 		 */
-		initBanners: function(retry) {
+		initBanners: function(onSuccess,onError,retry) {
 			var url = 'http://120.25.60.120:8080/api/init/getbanners';
 			mui.ajax(url, {
 				dataType: 'json',
@@ -101,12 +73,12 @@ var CarMaid = {};
 					onSuccess(data);
 				},
 				error: function(xhr, type, errorThrown) {
-					
+
 					--retry;
 					//console.log(retry);
 					if (retry > 0) {
 						console.log('banners error');
-						return Banners.initBanners(retry);
+						return Banners.initBanners(onSuccess,onError,retry);
 					}
 
 					onError(xhr, type, errorThrown);
@@ -141,7 +113,7 @@ var CarMaid = {};
 			}
 			return div;
 		}
-	}
+	};
 	$.Banners = Banners;
 
 })(CarMaid, mui);
@@ -152,7 +124,7 @@ var CarMaid = {};
 (function($, mui) {
 
 	var vehicle = {
-		GetVehicleBrands: function(onSuccess,onError, retry) {
+		GetVehicleBrands: function(onSuccess, onError, retry) {
 			var url = 'http://120.25.60.120:8080/api/Vehicle/GetVehicleBrands';
 			mui.ajax(url, {
 				dataType: 'json',
@@ -161,7 +133,7 @@ var CarMaid = {};
 				success: function(data) {
 					// 解析 生成为div
 					var parentDIV = document.getElementById('list');
-					
+
 					// 搜索 div
 					var searchDIV = document.createElement('div');
 					searchDIV.className = 'mui-indexed-list-search mui-input-row mui-search';
@@ -213,7 +185,7 @@ var CarMaid = {};
 							item.setAttribute('data-value', brand.index);
 							item.setAttribute('data-tags', brand.brandId);
 							item.innerText = brand.brandName;
-							
+
 							ul.appendChild(item);
 						}
 					}
@@ -232,164 +204,164 @@ var CarMaid = {};
 					--retry;
 					console.log(retry);
 					if (retry > 0) {
-						return vehicle.GetVehicleBrands(onSuccess,onError, retry);
+						return vehicle.GetVehicleBrands(onSuccess, onError, retry);
 					}
-					
+
 					onError();
 				}
 
 			});
 		},
-		GetVehicleSeries:function(VBID,onSuccess,onError, retry){
-			var url = 'http://120.25.60.120:8080/api/vehicle/GetVehicleSeries?VBID='+VBID;
-			mui.ajax(url,{
+		GetVehicleSeries: function(VBID, onSuccess, onError, retry) {
+			var url = 'http://120.25.60.120:8080/api/vehicle/GetVehicleSeries?VBID=' + VBID;
+			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
 				timeout: 5000,
-				success:function(data){
-					
+				success: function(data) {
+
 					// 初始化列表；
-					
+
 					// 改变标题
 					var brandName = document.getElementById('brandName');
 					brandName.innerText = data.brandName;
-					
+
 					// 左侧 汽车厂家列表；
 					var segmentedControls = document.getElementById('segmentedControls');
 					segmentedControls.innerHTML = '';
-					for (var i =0; i<data.vehicleSeries.length;i++) {
+					for (var i = 0; i < data.vehicleSeries.length; i++) {
 						var a = document.createElement('a');
-						a.className = i == 0? 'mui-control-item mui-active' : 'mui-control-item';
-						a.href = '#content'+i;
+						a.className = i == 0 ? 'mui-control-item mui-active' : 'mui-control-item';
+						a.href = '#content' + i;
 						a.innerText = data.vehicleSeries[i].manufacturerName;
 						segmentedControls.appendChild(a);
 					}
-					
+
 					// 右侧 车系列表；
 					var segmentedControlContents = document.getElementById('segmentedControlContents');
-					for(var i = 0;i<data.vehicleSeries.length;i++){
+					for (var i = 0; i < data.vehicleSeries.length; i++) {
 						// create contentDIV
 						var contentDIV = document.createElement('div');
-						contentDIV.className = i==0?'mui-control-content mui-active':'mui-control-content';
-						contentDIV.id = 'content'+i;
+						contentDIV.className = i == 0 ? 'mui-control-content mui-active' : 'mui-control-content';
+						contentDIV.id = 'content' + i;
 						//create ul
-						var ul =document.createElement('ul');
+						var ul = document.createElement('ul');
 						ul.className = 'mui-table-view';
 						// create li
-						for(var j = 0;j<data.vehicleSeries[i].vehicleSeries.length;j++){
+						for (var j = 0; j < data.vehicleSeries[i].vehicleSeries.length; j++) {
 							var vsItem = data.vehicleSeries[i].vehicleSeries[j];
 							//console.log(vsItem);
 							var li = document.createElement('li');
 							li.className = 'mui-table-view-cell';
 							li.id = vsItem.index;
-							li.setAttribute('data-carSreiesId',vsItem.carSreiesId);
+							li.setAttribute('data-carSreiesId', vsItem.carSreiesId);
 							li.innerText = vsItem.carSeries;
-							
+
 							ul.appendChild(li);
 						}
 						contentDIV.appendChild(ul);
 						segmentedControlContents.appendChild(contentDIV);
 					}
-					
-					
+
+
 					onSuccess();
 				},
-				error:function(xhr, type, errorThrown){
+				error: function(xhr, type, errorThrown) {
 					--retry;
 					console.log(retry);
 					if (retry > 0) {
-						return vehicle.GetVehicleSeries(VBID,onSuccess,onError, retry);
+						return vehicle.GetVehicleSeries(VBID, onSuccess, onError, retry);
 					}
-					
+
 					onError();
 				}
 			});
 		},
-		GetVehicleModel:function(vsid,onSuccess,onError, retry){
+		GetVehicleModel: function(vsid, onSuccess, onError, retry) {
 			var url = "http://120.25.60.120:8080/api/vehicle/GetVehicleModel?vsid=" + vsid;
-			mui.ajax(url,{
+			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
 				timeout: 5000,
-				success:function(data){
+				success: function(data) {
 					// 修改 标题
 					var seriesName = document.getElementById('seriesName');
 					seriesName.innerText = data.seriesName;
-					
+
 					// 左侧 年份 导航列表
 					var segmentedControls = document.getElementById('segmentedControls');
-					for(var i = 0; i< data.vehicleModel.length; i++){
+					for (var i = 0; i < data.vehicleModel.length; i++) {
 						var a = document.createElement('a');
-						a.className = i == 0? 'mui-control-item mui-active' : 'mui-control-item';
-						a.href = '#content'+i;
+						a.className = i == 0 ? 'mui-control-item mui-active' : 'mui-control-item';
+						a.href = '#content' + i;
 						a.innerText = data.vehicleModel[i].year;
 						segmentedControls.appendChild(a);
 					}
-					
-					
+
+
 					// 右侧 车型数据列表
 					var segmentedControlContents = document.getElementById('segmentedControlContents');
-					for(var i = 0;i<data.vehicleModel.length;i++){
+					for (var i = 0; i < data.vehicleModel.length; i++) {
 						// create contentDIV
 						var contentDIV = document.createElement('div');
-						contentDIV.className = i==0?'mui-control-content mui-active':'mui-control-content';
-						contentDIV.id = 'content'+i;
+						contentDIV.className = i == 0 ? 'mui-control-content mui-active' : 'mui-control-content';
+						contentDIV.id = 'content' + i;
 						//create ul
-						var ul =document.createElement('ul');
+						var ul = document.createElement('ul');
 						ul.className = 'mui-table-view';
 						// create li
-						for(var j = 0;j<data.vehicleModel[i].model.length;j++){
+						for (var j = 0; j < data.vehicleModel[i].model.length; j++) {
 							var vsItem = data.vehicleModel[i].model[j];
 							//console.log(vsItem);
 							var li = document.createElement('li');
 							li.className = 'mui-table-view-cell';
 							li.id = vsItem.index;
 							li.innerText = vsItem.vehicleModelName;
-							li.setAttribute('data-imageUrl',vsItem.imageUrl);
-							
+							li.setAttribute('data-imageUrl', vsItem.imageUrl);
+
 							ul.appendChild(li);
 						}
 						contentDIV.appendChild(ul);
 						segmentedControlContents.appendChild(contentDIV);
 					}
-								
+
 					onSuccess();
 				},
-				error:function(xhr, type, errorThrown){
+				error: function(xhr, type, errorThrown) {
 					--retry;
 					console.log(retry);
 					if (retry > 0) {
-						return vehicle.GetVehicleModel(vsid,onSuccess,onError, retry);
+						return vehicle.GetVehicleModel(vsid, onSuccess, onError, retry);
 					}
-					
+
 					onError();
 				}
 			});
 		},
-		InitVehicleModel:function(onSuccess,onError, retry){
+		InitVehicleModel: function(onSuccess, onError, retry) {
 			var url = 'http://www.google.com';
-			mui.ajax(url,{
+			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
 				timeout: 5000,
-				success:function(){
-					
-					
+				success: function() {
+
+
 					onSuccess();
 					console.log('success');
 				},
-				error:function(){
+				error: function() {
 					--retry;
 					console.log(retry);
 					if (retry > 0) {
-						return vehicle.InitVehicleModel(onSuccess,onError, retry);
+						return vehicle.InitVehicleModel(onSuccess, onError, retry);
 					}
-					
+
 					onError();
 				}
 			})
 		}
-	
+
 	}
 
 	$.Vehicle = vehicle;
@@ -399,22 +371,101 @@ var CarMaid = {};
 /*
  * Cookies
  */
-(function($,mui){
+(function($, mui) {
+	
 	var cookies = {
 		/*
-		 * 
+		 *
 		 */
-		setCookies:function(url,value,time){
+		setCookies: function(url, value, time) {
 			
+			plus.navigator.setCookie( url, value );
+			console.log(plus.navigator.getCookie(url));
 		},
-		getCookies:function(){
+		getCookies: function() {
+
+		},
+		removeCookies:function(){
 			
 		}
-	}
-	
+	};
+
 	$.Cookies = cookies;
-})(CarMaid,mui);
+})(CarMaid, mui);
 
-
+///*
+// * UserInfo
+// */
+//(function($, mui) {
+//	
+//	USERNAME = 'username';
+//	PASSWORD = 'password';
+//	COOKIES = 'LoginCookies';
+//
+//	var UserInfo = {
+//
+//		Clear: function() {
+//			plus.storage.removeItem(USERNAME);
+//			plus.storage.removeItem(PASSWORD);
+//			$.Cookies.removeCookies(COOKIES)
+//			//plus.storage.removeItem(COOKIES);
+//		},
+//		//检查是否包含自动登录的信息
+//		Auto_login: function() {
+//			var username = UserInfo.Username();
+//			var pwd = UserInfo.Password();
+//			if (!username || !pwd) {
+//				return false;
+//			}
+//			return true;
+//		},
+//		//检查是否已登录
+//		Has_login: function() {
+//			var username = UserInfo.Username();
+//			var pwd = UserInfo.Password();
+//			var cookie = UserInfo.LoginCookies();
+//			if (!username || !pwd || !cookie) {
+//				return false;
+//			}
+//			return true;
+//		},
+//		Username: function() {
+//			if (arguments.length == 0) {
+//				return plus.storage.getItem(USERNAME);
+//			}
+//			if (arguments[0] === '') {
+//				plus.storage.removeItem(USERNAME);
+//				return;
+//			}
+//			plus.storage.setItem(USERNAME, arguments[0]);
+//		},
+//		Password: function() {
+//			if (arguments.length == 0) {
+//				return plus.storage.getItem(PASSWORD);
+//			}
+//			if (arguments[0] === '') {
+//				plus.storage.removeItem(PASSWORD);
+//				return;
+//			}
+//			plus.storage.setItem(PASSWORD, arguments[0]);
+//		},
+//		LoginCookies: function() {
+//			if (arguments.length == 0) {
+//				return $.Cookies.getCookies(COOKIES);
+//				//return plus.storage.getItem('token');
+//			}
+//			if (arguments[0] === '') {
+//				$.Cookies.removeCookies(COOKIES);
+//				//plus.storage.removeItem('token');
+//				return;
+//			}
+//			$.Cookies.setCookies('url','value','d3');
+//			//plus.storage.setItem('token', arguments[0]);
+//		}
+//	};
+//	
+//	$.UserInfo = UserInfo;
+//
+//})(CarMaid, mui);
 
 
