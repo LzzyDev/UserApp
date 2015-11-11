@@ -62,7 +62,7 @@ var CarMaid = {};
 		/*
 		 * retry 为重试的次数
 		 */
-		initBanners: function(onSuccess,onError,retry) {
+		initBanners: function(onSuccess, onError, retry) {
 			var url = 'http://120.25.60.120:8080/api/init/getbanners';
 			mui.ajax(url, {
 				dataType: 'json',
@@ -78,7 +78,7 @@ var CarMaid = {};
 					//console.log(retry);
 					if (retry > 0) {
 						console.log('banners error');
-						return Banners.initBanners(onSuccess,onError,retry);
+						return Banners.initBanners(onSuccess, onError, retry);
 					}
 
 					onError(xhr, type, errorThrown);
@@ -372,34 +372,54 @@ var CarMaid = {};
  * Cookies
  */
 (function($, mui) {
-	
+
+	//s20是代表20秒
+	//h是指小时，如12小时则是：h12
+	//d是天数，30天则：d30 
+	function getsec(str) {
+		var str1 = str.substring(1, str.length) * 1;
+		var str2 = str.substring(0, 1);
+		if (str2 == "s") {
+			return str1 * 1000;
+		} else if (str2 == "h") {
+			return str1 * 60 * 60 * 1000;
+		} else if (str2 == "d") {
+			return str1 * 24 * 60 * 60 * 1000;
+		}
+	}
+
 	var cookies = {
 		/*
 		 *
 		 */
-		setCookies: function(url, value, time) {
+		setCookies: function(url, name, value, time) {
 			
-			plus.navigator.setCookie( url, value );
-			console.log(plus.navigator.getCookie(url));
-		},
-		getCookies: function() {
+			var strsec = getsec(time);
+    		var exp = new Date();
+    		exp.setTime(exp.getTime() + strsec * 1);
 
+			var tmp = name + "=" + value + ";expires=" + exp.toGMTString() + ";path=/";
+			console.log('tmp:'+tmp);
+			plus.navigator.setCookie(url, tmp);
 		},
-		removeCookies:function(){
-			
+		getCookies: function(url) {
+			return plus.navigator.getCookie(url);
+		},
+		removeCookies: function(url) {
+			plus.navigator.removeCookie(url);
 		}
 	};
 
 	$.Cookies = cookies;
 })(CarMaid, mui);
 /*
-   * UserInfo
-   */
+ * UserInfo
+ */
 (function($, mui) {
-	
+
 	var USERNAME = 'username';
 	var PASSWORD = 'password';
-	var COOKIES = 'LoginCookies';
+	var COOKIES = 'http://120.25.60.120:8080/api/Member';
 
 	var UserInfo = {
 
@@ -407,7 +427,7 @@ var CarMaid = {};
 			plus.storage.removeItem(USERNAME);
 			plus.storage.removeItem(PASSWORD);
 			$.Cookies.removeCookies(COOKIES)
-			//plus.storage.removeItem(COOKIES);
+
 		},
 		//检查是否包含自动登录的信息
 		Auto_login: function() {
@@ -420,10 +440,10 @@ var CarMaid = {};
 		},
 		//检查是否已登录
 		Has_login: function() {
-			var username = UserInfo.Username();
-			var pwd = UserInfo.Password();
+			//var username = UserInfo.Username();
+			//var pwd = UserInfo.Password();
 			var cookie = UserInfo.LoginCookies();
-			if (!username || !pwd || !cookie) {
+			if (!cookie) {
 				return false;
 			}
 			return true;
@@ -451,19 +471,15 @@ var CarMaid = {};
 		LoginCookies: function() {
 			if (arguments.length == 0) {
 				return $.Cookies.getCookies(COOKIES);
-				//return plus.storage.getItem('token');
 			}
 			if (arguments[0] === '') {
 				$.Cookies.removeCookies(COOKIES);
-				//plus.storage.removeItem('token');
 				return;
 			}
-			$.Cookies.setCookies('url','value','d3');
-			//plus.storage.setItem('token', arguments[0]);
+			$.Cookies.setCookies(COOKIES, arguments[0], 'd3'); // 三天有效期。
 		}
 	};
-	
+
 	$.UserInfo = UserInfo;
 
 })(CarMaid, mui);
-

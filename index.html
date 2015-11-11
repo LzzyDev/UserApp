@@ -51,7 +51,7 @@
 				bottom: '51px'
 			};
 			var aniShow = {};
-			 //创建子页面，首个选项卡页面显示，其它均隐藏；
+			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			var menu = null,
 				main = null;
 			var templates = {};
@@ -105,16 +105,18 @@
 			var initTemplates = function() {
 				getTemplate('default', 'template.html');
 			};
-			 //请求Banner成功后的回调方法
+			//请求Banner成功后的回调方法
 			function onSuccess(data) {
 				if (data.length > 0) {
 					// 获取Home 的 webview对象
 					var HomePage = plus.webview.getWebviewById('templates/Home/index.html');
 					// 触发UpBanners 事件
 					console.log(HomePage.id);
-
+					// 在有些情况 直接 fire 无法触发事件， 需要 homepage 的 onloaded 事件触发后才可触发，但是这样  可能会 触发两次 UpBanners 事件。
+					mui.fire(HomePage, 'UpBanners', {
+						data: data
+					});
 					HomePage.onloaded = function() {
-
 						console.log('HomePage加载完成');
 						console.log('homePage.id:' + HomePage.id);
 						mui.fire(HomePage, 'UpBanners', {
@@ -190,14 +192,17 @@
 				// 获取当前设备位置
 				CarMaid.Map.getPosByBaidu(CarMaid.Map.geoInf);
 				// initBanners 
-				CarMaid.Banners.initBanners(onSuccess,onError,3);
+				CarMaid.Banners.initBanners(onSuccess, onError, 3);
 				//initBanners();
-				//CarMaid.Cookies.setCookies('chshibang','test=123; expires=Friday,24-Jan-2015 16:24:36 GMT; path=/');
+				//CarMaid.Cookies.setCookies('','test1','{name:zhaokun1,age:21}','d1');
+				//CarMaid.Cookies.setCookies('','test2','{name:zhaokun2,age:21}','d1');
+				//CarMaid.Cookies.getCookies('http://120.25.60.120','');
+
 			});
-			 //当前激活选项
+			//当前激活选项
 			var activeTab = subpages[0];
 			var title = document.getElementById("title");
-			 // 选项卡点击事件
+			// 选项卡点击事件
 			mui("#bottomnav").on('tap', 'a', function(e) {
 				var targetTab = this.getAttribute('id');
 				if (targetTab == activeTab) {
@@ -281,7 +286,7 @@
 					}, 300);
 				}
 			};
-			 //点击左上角侧滑图标，打开侧滑菜单；
+			//点击左上角侧滑图标，打开侧滑菜单；
 			document.querySelector('.mui-icon-bars').addEventListener('tap', function(e) {
 				if (showMenu) {
 					closeMenu();
@@ -289,27 +294,27 @@
 					openMenu();
 				}
 			});
-			 //在android4.4.2中的swipe事件，需要preventDefault一下，否则触发不正常
+			//在android4.4.2中的swipe事件，需要preventDefault一下，否则触发不正常
 			window.addEventListener('dragstart', function(e) {
 				mui.gestures.touch.lockDirection = true; //锁定方向
 				mui.gestures.touch.startDirection = e.detail.direction;
 			});
-			 //主界面向右滑动，若菜单未显示，则显示菜单；否则不做任何操作
+			//主界面向右滑动，若菜单未显示，则显示菜单；否则不做任何操作
 			window.addEventListener("swiperight", function(e) {
 				if (Math.abs(e.detail.angle) < 10) {
 					openMenu();
 				}
 			});
-			 //oldPage.addEventListener("swiperight",openMenu);
-			 //主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
+			//oldPage.addEventListener("swiperight",openMenu);
+			//主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
 			window.addEventListener("swipeleft", function(e) {
 				console.log(e.detail.angle);
 				closeMenu();
 			});
-			 //侧滑菜单触发关闭菜单命令
+			//侧滑菜单触发关闭菜单命令
 			window.addEventListener("menu:close", closeMenu);
 			window.addEventListener("menu:open", openMenu);
-			 //重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
 			mui.menu = function() {
 					if (showMenu) {
 						closeMenu();
