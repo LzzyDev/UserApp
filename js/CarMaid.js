@@ -392,80 +392,78 @@ var CarMaid = {};
 
 	$.Cookies = cookies;
 })(CarMaid, mui);
+/*
+   * UserInfo
+   */
+(function($, mui) {
+	
+	var USERNAME = 'username';
+	var PASSWORD = 'password';
+	var COOKIES = 'LoginCookies';
 
-///*
-// * UserInfo
-// */
-//(function($, mui) {
-//	
-//	USERNAME = 'username';
-//	PASSWORD = 'password';
-//	COOKIES = 'LoginCookies';
-//
-//	var UserInfo = {
-//
-//		Clear: function() {
-//			plus.storage.removeItem(USERNAME);
-//			plus.storage.removeItem(PASSWORD);
-//			$.Cookies.removeCookies(COOKIES)
-//			//plus.storage.removeItem(COOKIES);
-//		},
-//		//检查是否包含自动登录的信息
-//		Auto_login: function() {
-//			var username = UserInfo.Username();
-//			var pwd = UserInfo.Password();
-//			if (!username || !pwd) {
-//				return false;
-//			}
-//			return true;
-//		},
-//		//检查是否已登录
-//		Has_login: function() {
-//			var username = UserInfo.Username();
-//			var pwd = UserInfo.Password();
-//			var cookie = UserInfo.LoginCookies();
-//			if (!username || !pwd || !cookie) {
-//				return false;
-//			}
-//			return true;
-//		},
-//		Username: function() {
-//			if (arguments.length == 0) {
-//				return plus.storage.getItem(USERNAME);
-//			}
-//			if (arguments[0] === '') {
-//				plus.storage.removeItem(USERNAME);
-//				return;
-//			}
-//			plus.storage.setItem(USERNAME, arguments[0]);
-//		},
-//		Password: function() {
-//			if (arguments.length == 0) {
-//				return plus.storage.getItem(PASSWORD);
-//			}
-//			if (arguments[0] === '') {
-//				plus.storage.removeItem(PASSWORD);
-//				return;
-//			}
-//			plus.storage.setItem(PASSWORD, arguments[0]);
-//		},
-//		LoginCookies: function() {
-//			if (arguments.length == 0) {
-//				return $.Cookies.getCookies(COOKIES);
-//				//return plus.storage.getItem('token');
-//			}
-//			if (arguments[0] === '') {
-//				$.Cookies.removeCookies(COOKIES);
-//				//plus.storage.removeItem('token');
-//				return;
-//			}
-//			$.Cookies.setCookies('url','value','d3');
-//			//plus.storage.setItem('token', arguments[0]);
-//		}
-//	};
-//	
-//	$.UserInfo = UserInfo;
-//
-//})(CarMaid, mui);
+	var UserInfo = {
 
+		Clear: function() {
+			plus.storage.removeItem(USERNAME);
+			plus.storage.removeItem(PASSWORD);
+			$.Cookies.removeCookies(COOKIES)
+			//plus.storage.removeItem(COOKIES);
+		},
+		//检查是否包含自动登录的信息
+		Auto_login: function() {
+			var username = UserInfo.Username();
+			var pwd = UserInfo.Password();
+			if (!username || !pwd) {
+				return false;
+			}
+			return true;
+		},
+		//检查是否已登录
+		Has_login: function() {
+			var username = UserInfo.Username();
+			var pwd = UserInfo.Password();
+			var cookie = UserInfo.LoginCookies();
+			if (!username || !pwd || !cookie) {
+				return false;
+			}
+			return true;
+		},
+		Username: function() {
+			if (arguments.length == 0) {
+				return plus.storage.getItem(USERNAME);
+			}
+			if (arguments[0] === '') {
+				plus.storage.removeItem(USERNAME);
+				return;
+			}
+			plus.storage.setItem(USERNAME, arguments[0]);
+		},
+		Password: function() {
+			if (arguments.length == 0) {
+				return plus.storage.getItem(PASSWORD);
+			}
+			if (arguments[0] === '') {
+				plus.storage.removeItem(PASSWORD);
+				return;
+			}
+			plus.storage.setItem(PASSWORD, arguments[0]);
+		},
+		LoginCookies: function() {
+			if (arguments.length == 0) {
+				return $.Cookies.getCookies(COOKIES);
+				//return plus.storage.getItem('token');
+			}
+			if (arguments[0] === '') {
+				$.Cookies.removeCookies(COOKIES);
+				//plus.storage.removeItem('token');
+				return;
+			}
+			$.Cookies.setCookies('url','value','d3');
+			//plus.storage.setItem('token', arguments[0]);
+		}
+	};
+	
+	$.UserInfo = UserInfo;
+
+})(CarMaid, mui);
 
