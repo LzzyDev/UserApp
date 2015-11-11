@@ -63,6 +63,7 @@ var CarMaid = {};
 			// 获取Home 的 webview对象
 			var HomePage = plus.webview.getWebviewById('templates/Home/index.html');
 			// 触发UpBanners 事件
+			console.log(HomePage.id);
 			HomePage.onloaded = function(){
 				console.log('HomePage加载完成');
 				console.log('homePage.id:' + HomePage.id);
@@ -70,7 +71,11 @@ var CarMaid = {};
 					data: data
 				});
 				console.log(HomePage.id);
-			}
+				return;
+			};
+			mui.fire(HomePage, 'UpBanners', {
+				data: data
+			});
 		}
 	}
 
@@ -90,7 +95,7 @@ var CarMaid = {};
 			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
-				timeout: 10000,
+				timeout: 5000,
 				success: function(data) {
 					console.log('banners ok');
 					onSuccess(data);
@@ -152,7 +157,7 @@ var CarMaid = {};
 			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
-				timeout: 10000,
+				timeout: 5000,
 				success: function(data) {
 					// 解析 生成为div
 					var parentDIV = document.getElementById('list');
@@ -240,7 +245,7 @@ var CarMaid = {};
 			mui.ajax(url,{
 				dataType: 'json',
 				type: 'get',
-				timeout: 10000,
+				timeout: 5000,
 				success:function(data){
 					
 					// 初始化列表；
@@ -305,7 +310,7 @@ var CarMaid = {};
 			mui.ajax(url,{
 				dataType: 'json',
 				type: 'get',
-				timeout: 10000,
+				timeout: 5000,
 				success:function(data){
 					// 修改 标题
 					var seriesName = document.getElementById('seriesName');
@@ -366,7 +371,7 @@ var CarMaid = {};
 			mui.ajax(url,{
 				dataType: 'json',
 				type: 'get',
-				timeout: 10000,
+				timeout: 5000,
 				success:function(){
 					
 					
