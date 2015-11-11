@@ -419,14 +419,14 @@ var CarMaid = {};
 
 	var USERNAME = 'username';
 	var PASSWORD = 'password';
-	var COOKIES = 'http://120.25.60.120:8080/api/Member';
+	var COOKIES_URL = 'http://120.25.60.120:8080/api/Member';
 
 	var UserInfo = {
 
 		Clear: function() {
 			plus.storage.removeItem(USERNAME);
 			plus.storage.removeItem(PASSWORD);
-			$.Cookies.removeCookies(COOKIES)
+			$.Cookies.removeCookies(COOKIES_URL)
 
 		},
 		//检查是否包含自动登录的信息
@@ -470,13 +470,13 @@ var CarMaid = {};
 		},
 		LoginCookies: function() {
 			if (arguments.length == 0) {
-				return $.Cookies.getCookies(COOKIES);
+				return $.Cookies.getCookies(COOKIES_URL);
 			}
 			if (arguments[0] === '') {
-				$.Cookies.removeCookies(COOKIES);
+				$.Cookies.removeCookies(COOKIES_URL);
 				return;
 			}
-			$.Cookies.setCookies(COOKIES, arguments[0], 'd3'); // 三天有效期。
+			$.Cookies.setCookies(COOKIES_URL, arguments[0], 'd3'); // 三天有效期。
 		}
 	};
 
