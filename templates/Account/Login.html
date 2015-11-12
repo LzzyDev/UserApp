@@ -169,14 +169,18 @@
 		<script>
 			mui.init();
 			var VerifyCode = document.getElementById('VerifyCode');
-			VerifyCode.onkeyup = function(){
+
+			VerifyCode.addEventListener('input',function(){
 				console.log(this.value.length);
-				if(this.value.length>0){
+				var phone  = document.getElementById('PhoneNumber').value;
+				var telReg = !!phone.match(/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/);
+				
+				if(this.value.length>0 && telReg == true){
 					document.getElementById('login').className = 'mui-btn mui-btn-block mui-btn-warning'
 				}else{
 					document.getElementById('login').className = 'mui-btn mui-btn-block mui-btn-warning mui-disabled'
 				}
-			}
+			});
 			var wait = 60;
 			function time(o) {
 				if (wait == 0) {
