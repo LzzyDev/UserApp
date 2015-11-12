@@ -374,6 +374,7 @@ var CarMaid = {};
 (function($, mui) {
 
 	//s20是代表20秒
+	//m是指分钟，如15分钟则是：m15
 	//h是指小时，如12小时则是：h12
 	//d是天数，30天则：d30 
 	function getsec(str) {
@@ -381,7 +382,9 @@ var CarMaid = {};
 		var str2 = str.substring(0, 1);
 		if (str2 == "s") {
 			return str1 * 1000;
-		} else if (str2 == "h") {
+		}else if(str2 =="m"){
+			return str1 * 60 * 1000;
+		}else if (str2 == "h") {
 			return str1 * 60 * 60 * 1000;
 		} else if (str2 == "d") {
 			return str1 * 24 * 60 * 60 * 1000;
