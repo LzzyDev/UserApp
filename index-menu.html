@@ -63,6 +63,7 @@
 			</ul>
 		</div>
 		<script src="js/mui.min.js"></script>
+		<script src="js/CarMaid.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
 			var aniShow = "slide-in-right";
 			 //关于backbutton和menubutton两个按键的说明，在iOS平台不存在，故需隐藏
@@ -85,24 +86,73 @@
 				var type = this.getAttribute("open-type");
 				var href = this.href;
 				if (type == "common" || mui.os.ios) {
-					console.log('type:'+ type + 'Is IOS:' + mui.os.ios);
+					console.log('type:' + type + '；Is IOS:' + mui.os.ios);
 					var webview_style = {
 						popGesture: "close"
 					};
-					mui.openWindow({
-						id: id,
-						url: href,
-						styles: webview_style,
-						show: {
-							aniShow: aniShow
-						},
-						waiting: {
-							autoShow: false
+					// 判断打开该页面是否需要登录。 不需要 则 直接打开页面。
+					var login = this.getAttribute('login');
+					if (login) {
+						console.log('登录后继续。');
+						// 判断是否已经登录 ，已登录 直接打开页面，反之则打开登录页面。
+						if (CarMaid.UserInfo.Has_login()) {
+							ShowTemplateForISO(id, href, webview_style, aniShow);
+						} else {
+							ShowLoginPage();
 						}
-					});
+					} else {
+						ShowTemplateForISO(id, href, webview_style, aniShow);
+					}
 				} else {
 					var href = this.href;
 					var title = this.innerText;
+					var login = this.getAttribute('login');
+					if (login) {
+						// 判断 是否已经登录
+						if (CarMaid.UserInfo.Has_login()) {
+							ShowTemplate(href, title);
+						} else {
+							ShowLoginPage();
+						}
+					} else {
+						ShowTemplate(href, title);
+					}
+				}
+			});
+
+			function ShowLoginPage() {
+				mui.toast('您还没有登录呢~~~');
+				var loginPage = mui.openWindow({
+					id: 'templates/Account/Login.html',
+					url: 'templates/Account/Login.html',
+					show: {
+						aniShow: 'slide-in-bottom',
+						duration: 500
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+//				loginPage.onclose = function() {
+//					console.log('关闭登录页了。');
+//				}
+			}
+
+			function ShowTemplateForISO(id, href, webview_style, aniShow) {
+				mui.openWindow({
+					id: id,
+					url: href,
+					styles: webview_style,
+					show: {
+						aniShow: aniShow
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+
+			function ShowTemplate(href, title) {
 					template = plus.webview.getWebviewById("default-main");
 					//获得共用子webview
 					subWebview = template.children()[0];
@@ -115,10 +165,9 @@
 						showMenu: false
 					});
 					if (subWebview.getURL() != href) {
-						
 						// 关闭公共子页面的子页面
 						var arrsub = template.children()[0].children();
-						for(var i = 0;i<arrsub.length;i++){
+						for (var i = 0; i < arrsub.length; i++) {
 							console.log(arrsub[i].id);
 							arrsub[i].close('none');
 						}
@@ -128,10 +177,10 @@
 					}
 					template.show('slide-in-right', 150);
 				}
-			});
-			/**
-			 * 关闭侧滑菜单
-			 */
+				/**
+				 * 关闭侧滑菜单
+				 */
+
 			function close() {
 					mui.fire(mui.currentWebview.opener(), "menu:close");
 				}

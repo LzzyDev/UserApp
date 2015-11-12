@@ -83,6 +83,34 @@
 			.mui-bar h1 .mui-title {
 				color: red;
 			}
+			.mui-input-row .mui-btn{
+				width: auto;
+				/*padding: 0px;*/
+				padding: 6px 12px;
+			}
+			.mui-icon-getVerifyCode {
+				display: inline-block;
+				width: auto;
+				top: 5px;
+				font-size: 24px;
+				position: absolute;
+				z-index: 1;
+				right: 3px;
+				width: 38px;
+				height: 38px;
+				text-align: center;
+				color: #999;
+			}
+			.mui-content-padded a{
+				color: #ff6504;
+			}
+			.mui-btn-warning, input[type=submit]{
+				background-color: #ff6504;
+				border:1px solid #ff6504
+			}
+			.iconfont{
+				color: #ff6504;
+			}
 		</style>
 
 	</head>
@@ -96,25 +124,18 @@
 			<form id='login-form' class="mui-input-group">
 				<div class="mui-input-row">
 					<label><span class="mui-icon iconfont icon-shouji"></span></label>
-					<input id='account' type="number" class="mui-input-clear mui-input" placeholder="请输入手机号码">
+					<input id='PhoneNumber' type="number" maxlength="11" class="mui-input-clear mui-input" placeholder="请输入手机号码">
 				</div>
 				<div class="mui-input-row">
 					<label><span class="mui-icon iconfont icon-mima"></span></label>
-					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入验证码">
+					<input id='VerifyCode' type="text" class="mui-input-clear mui-input" placeholder="请输入验证码">
+					<a class="mui-icon mui-icon-getVerifyCode" style="">
+						<button id="sendVerifyCode" type="button" class="mui-btn mui-btn-warning">获取验证码</button>
+					</a>
 				</div>
 			</form>
-			<!--<form class="mui-input-group">
-				<ul class="mui-table-view mui-table-view-chevron">
-					<li class="mui-table-view-cell">
-						自动登录
-						<div id="autoLogin" class="mui-switch">
-							<div class="mui-switch-handle"></div>
-						</div>
-					</li>
-				</ul>
-			</form>-->
 			<div class="mui-content-padded">
-				<button id='login' class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+				<button id='login' class="mui-btn mui-btn-block mui-btn-warning">登录</button>
 				<div class="link-area"><a id='reg'>注册账号</a> <span class="spliter">|</span> <a id='forgetPassword'>忘记密码</a>
 				</div>
 			</div>
@@ -125,6 +146,25 @@
 		<script src="../../js/mui.min.js"></script>
 		<script>
 			mui.init();
+			
+			mui('#sendVerifyCode')[0].addEventListener('tap',function(){
+				var phone = document.getElementById('PhoneNumber').value;
+
+				var telReg = !!phone.match(/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/);
+				//如果手机号码不能通过验证
+				if(telReg == false){
+ 					mui.toast('请输入正确的手机号');
+ 					return;
+				}
+				
+				
+				
+				console.log(phone);
+			});
+			mui('#login')[0].addEventListener('tap',function(){
+				console.log('login');
+			});
+			
 		</script>
 	</body>
 
