@@ -422,7 +422,8 @@ var CarMaid = {};
 
 	var USERNAME = 'username';
 	var PASSWORD = 'password';
-	var COOKIES_URL = 'http://120.25.60.120:8080/api/Member';
+	var COOKIES_URL = 'http://120.25.60.120';
+	var PHONE = 'userphone';
 
 	var UserInfo = {
 
@@ -479,7 +480,17 @@ var CarMaid = {};
 				$.Cookies.removeCookies(COOKIES_URL);
 				return;
 			}
-			$.Cookies.setCookies(COOKIES_URL, arguments[0], 'd3'); // 三天有效期。
+			$.Cookies.setCookies(COOKIES_URL, "UserID", arguments[0], 'd3'); // 三天有效期。
+		},
+		Phone:function(){
+			if (arguments.length == 0) {
+				return $.Cookies.getCookies(PHONE);
+			}
+			if (arguments[0] === '') {
+				$.Cookies.removeCookies(PHONE);
+				return;
+			}
+			$.Cookies.setCookies(PHONE, PHONE, arguments[0], 'd5'); // 五天有效期。
 		}
 	};
 

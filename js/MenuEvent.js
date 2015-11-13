@@ -15,7 +15,8 @@ window.addEventListener('dragright', function(e) {
 
 //主界面向右滑动，若菜单未显示，则显示菜单；否则不做任何操作
 window.addEventListener("swiperight", function(e) {
-	if (Math.abs(e.detail.angle) < 10) {
+	console.log(e.detail.angle);
+	if (Math.abs(e.detail.angle) < 15) {
 		//获得主页面的webview
 		var main = plus.webview.currentWebview().parent();
 		//触发主页面的openMenu事件

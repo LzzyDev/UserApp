@@ -207,11 +207,11 @@
 				var url = 'http://120.25.60.120:8080/api/Member/SendVerifyCode?phoneNumber=' + phone;
 				mui.ajax(url, {
 					dataType: 'text',
-					type: 'get',
+					type: 'post',
 					timeout: 10000,
 					success: function(data,textStatus,xhr) {
 						console.log('密文：' + data);
-						data = jsdecrypt("123@Abc", data).toString();
+						data = jsdecrypt("123@Abc", data).toString(); // 解密
 						CarMaid.Cookies.setCookies('VerifyCode', 'VerifyCode', data, 'm15');
 						var obj = document.getElementById('sendVerifyCode');
 						time(obj);
@@ -224,7 +224,12 @@
 				console.log(phone);
 			});
 			mui('#login')[0].addEventListener('tap', function() {
+				if(!CarMaid.Cookies.getCookies('VerifyCode')) {
+					mui.toast('验证码错误');
+					return;
+				}
 				var Code = document.getElementById('VerifyCode').value;
+				console.log(CarMaid.Cookies.getCookies('VerifyCode'));
 				var VCode = CarMaid.Cookies.getCookies('VerifyCode').substr(11);
 				console.log(Code);
 				console.log(VCode);
@@ -233,16 +238,29 @@
 					return;
 				}
 				
-				var url = 'http://120.25.60.120:8080/api/Member/SignIn';
+				var phone = document.getElementById('PhoneNumber').value;
+				phone = jsencrypt('123@Abc',phone); // 加密 电话号码。
+				console.log(phone);
+				var url = 'http://120.25.60.120:8080/api/Account/SignIn?phoneNumber=' + phone;
 				mui.ajax(url,{
 					dataType: 'json',
-					type: 'get',
+					type: 'post',
 					timeout: 10000,
 					success:function(data){
-						
+
+						if(data.success){
+							CarMaid.UserInfo.LoginCookies(data.message);
+							CarMaid.UserInfo.Phone(phone);
+
+							mui.back();
+						}else {
+							mui.toast(data.message);
+						}
+
 					},
 					error:function(xhr, type, errorThrown){
-						
+						mui.toast('登录失败');
+						console.log(xhr.response);
 					}
 				});
 					
