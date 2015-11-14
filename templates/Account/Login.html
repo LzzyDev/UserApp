@@ -196,6 +196,8 @@
 					},1000);
 				}
 			}
+			
+			// 发送验证码
 			mui('#sendVerifyCode')[0].addEventListener('tap', function() {
 				var phone = document.getElementById('PhoneNumber').value;
 				var telReg = !!phone.match(/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/);
@@ -210,8 +212,9 @@
 					type: 'post',
 					timeout: 10000,
 					success: function(data,textStatus,xhr) {
-						console.log('密文：' + data);
-						data = jsdecrypt("123@Abc", data).toString(); // 解密
+						console.log('密文：' + data.length);
+						data = jsdecrypt('123@Abc', data).toString(); // 解密
+						console.log(data);
 						CarMaid.Cookies.setCookies('VerifyCode', 'VerifyCode', data, 'm15');
 						var obj = document.getElementById('sendVerifyCode');
 						time(obj);
@@ -223,6 +226,8 @@
 				});
 				console.log(phone);
 			});
+			
+			// 登陆
 			mui('#login')[0].addEventListener('tap', function() {
 				if(!CarMaid.Cookies.getCookies('VerifyCode')) {
 					mui.toast('验证码错误');
@@ -230,14 +235,14 @@
 				}
 				var Code = document.getElementById('VerifyCode').value;
 				console.log(CarMaid.Cookies.getCookies('VerifyCode'));
-				var VCode = CarMaid.Cookies.getCookies('VerifyCode').substr(11);
+				var VCode = CarMaid.Cookies.getCookies('VerifyCode').substr(11,6);
 				console.log(Code);
 				console.log(VCode);
 				if(Code != VCode){
 					mui.toast('验证码错误');
 					return;
 				}
-				
+				document.getElementById('login').className = 'mui-btn mui-btn-block mui-btn-warning mui-disabled';
 				var phone = document.getElementById('PhoneNumber').value;
 				phone = jsencrypt('123@Abc',phone); // 加密 电话号码。
 				console.log(phone);
@@ -255,18 +260,29 @@
 							mui.back();
 						}else {
 							mui.toast(data.message);
+							document.getElementById('login').className = 'mui-btn mui-btn-block mui-btn-warning';
 						}
 
 					},
 					error:function(xhr, type, errorThrown){
 						mui.toast('登录失败');
 						console.log(xhr.response);
+						document.getElementById('login').className = 'mui-btn mui-btn-block mui-btn-warning';
 					}
 				});
 					
 			});
 			
+			mui.plusReady(function(){
+				var phone = CarMaid.UserInfo.Phone();
+				console.log(phone);
+				if(phone){
 
+					phone = jsdecrypt('123@Abc',phone.substr(10)).toString().substring(0,11);
+					console.log(phone.length);
+					document.getElementById('PhoneNumber').value = phone;
+				}
+			});
 			
 		</script>
 	</body>

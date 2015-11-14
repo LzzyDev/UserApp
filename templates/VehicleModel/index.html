@@ -8,37 +8,45 @@
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<style type="text/css">
 			.mui-table-view-cell > .mui-slider-handle {
-				margin-right: 40px;
+				/*margin-right: 40px;*/
 			}
+			
 			.mui-table-view-cell.mui-checkbox input[type=checkbox],
 			.mui-table-view-cell.mui-radio input[type=radio] {
 				right: -25px;
 			}
+			
 			.mui-input-group .mui-input-row {
 				height: auto;
 			}
+			
 			.mui-media-body p {
 				margin-top: 5px;
 			}
-			.mui-content>.mui-table-view:first-child{
+			
+			.mui-content>.mui-table-view:first-child {
 				margin-top: 0px;
 			}
-			.error{
+			.mui-checkbox input[type=checkbox], .mui-radio input[type=radio]{
+				right: 0px;
+			}
+			.error {
 				text-align: center;
 				margin: 0 auto;
 				padding: 30px;
-				color: #8f8f94; 
+				color: #8f8f94;
 				height: 100%;
 				width: 100%;
 				position: fixed;
 				top: 50px;
 				display: none;
 			}
-			.loading{
+			
+			.loading {
 				text-align: center;
 				margin: 0 auto;
 				padding: 30px;
-				color: #8f8f94; 
+				color: #8f8f94;
 				height: 100%;
 				width: 100%;
 				position: fixed;
@@ -53,19 +61,19 @@
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">我的车型</h1>
 			<a id="addVehileModel" class="mui-icon mui-icon-plus mui-pull-right">
-				<span style="font-size: 18px;">
+				<span id="VehicleAdd" style="font-size: 18px;">
 					新增
 				</span>
 			</a>
 		</header>
 		<div id="Content" class="mui-content">
 			<form id="VehileModelCollection" class="mui-table-view">
-				<!--<div id="vmid" class="mui-table-view-cell mui-radio">
+				<!--<div id="vmid" class="mui-table-view-cell ">
 					<div class="mui-slider-right mui-disabled">
 						<a data-id = "vmid" class="mui-btn mui-btn-yellow mui-icon mui-icon-compose"></a>
 						<a data-id = 'vmid' class="mui-btn mui-btn-red mui-icon mui-icon-trash"></a>
 					</div>
-					<div class="mui-slider-handle">
+					<div class="mui-slider-handle mui-radio">
 						<img class="mui-media-object mui-pull-left" src="../../images/60x60.gif" />
 						<div class="mui-media-body">
 							XXXX
@@ -75,16 +83,15 @@
 					</div>
 				</div>-->
 			</form>
-			
+
 			<div id="error" class="error" href="###">
-				<span class="mui-icon iconfont icon-sousuojieguomeiyou" style=""></span>
-				点击重新加载！
+				<span class="mui-icon iconfont icon-sousuojieguomeiyou" style=""></span> 点击重新加载！
 			</div>
-			
+
 			<div id="loading" class="loading" href="###">
 				<span class="mui-spinner" style=""></span>
 			</div>
-			
+
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/CarMaid.js" type="text/javascript" charset="utf-8"></script>
@@ -92,44 +99,55 @@
 			mui.init();
 			var error = document.getElementById('error');
 			var loading = document.getElementById('loading');
-			
-			function OnSuccessCallback(){
-				
-				
+
+			function OnSuccessCallback() {
 				loading.style.display = 'none';
 				getVehicleModelForCookies();
 			}
-			function OnErrorCallback(){
-				
-				
+
+			function OnErrorCallback() {
 				loading.style.display = 'none';
 				//error.style.display = 'bli'
 				getVehicleModelForCookies();
 			}
 			// 获取cookies 中的车型。
-			function getVehicleModelForCookies(){
+			function getVehicleModelForCookies() {
 				
 			}
-			
 			mui.plusReady(function() {
-				document.getElementById('addVehileModel').addEventListener('tap', function() {
-					mui.openWindow({
-						url: 'VehicleBrandList.html',
-						id: 'VehicleBrandList.html',
-						show: {
-							autoShow: false,
-							aniShow: 'slide-in-right',
-							duration: 300,
-						}
-					});
-				}); 
-				
-				CarMaid.Vehicle.InitVehicleModel(OnSuccessCallback,OnErrorCallback,3);
+				// 判断是否已经登陆。
+				if (!CarMaid.UserInfo.Has_login()) {
+					document.getElementById('VehicleAdd').innerText = '更改';
+				}
+				CarMaid.Vehicle.InitVehicleModel(OnSuccessCallback, OnErrorCallback, 3);
 			});
-			mui('#VehileModelCollection').on('tap', '.mui-table-view-cell', function() {
+			document.getElementById('addVehileModel').addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'VehicleBrandList.html',
+					id: 'VehicleBrandList.html',
+					show: {
+						autoShow: false,
+						aniShow: 'slide-in-right',
+						duration: 300,
+					}
+				});
+			});
+			mui('#VehileModelCollection').on('tap', '.mui-slider-handle', function() {
+				
+				var input = this.querySelector('.mui-slider-handle input');
+				input.checked = true;
 				console.log('点击内容');
 			});
-
+			// 编辑车型
+			mui('#VehileModelCollection').on('tap','.mui-icon-compose',function(){
+				console.log('edit');
+				console.log(this.getAttribute('data-id'));
+			});
+			// 删除车型
+			mui('#VehileModelCollection').on('tap','.mui-icon-trash',function(){
+			 	console.log('del');
+				console.log(this.getAttribute('data-id'));
+			});
 		</script>
 	</body>
 

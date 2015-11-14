@@ -217,7 +217,7 @@
 							</li>
 						</ul>
 						<ul class="mui-table-view">
-							<li class="mui-table-view-cell" style="text-align: center;">
+							<li id="SignUp" class="mui-table-view-cell" style="text-align: center;">
 								<a>退出登录</a>
 							</li>
 						</ul>
@@ -510,6 +510,7 @@
 	</body>
 	<script src="../../js/mui.min.js "></script>
 	<script src="../../js/mui.view.js "></script>
+	<script src="../../js/CarMaid.js" type="text/javascript" charset="utf-8"></script>
 	<!--<script src='../libs/easymob-webim-sdk/jquery-1.11.1.js'></script>
 	<script src='../libs/easymob-webim-sdk/strophe-custom-2.0.0.js'></script>
 	<script src='../libs/easymob-webim-sdk/json2.js'></script>
@@ -526,7 +527,7 @@
 		mui('.mui-scroll-wrapper').scroll();
 		 //分享操作
 		var shares = {};
-//		mui.plusReady(function() {
+		mui.plusReady(function() {
 //			plus.share.getServices(function(s) {
 //				if (s && s.length > 0) {
 //					for (var i = 0; i < s.length; i++) {
@@ -541,7 +542,14 @@
 //			setTimeout(function() {
 //				initImgPreview();
 //			}, 500); 
-//		});
+
+			var userID = CarMaid.UserInfo.LoginCookies().substr(7);
+			mui.ajax('',{
+				
+			})
+			console.log(userID);
+
+		});
 		// 分享链接点击事件
 		document.getElementById("share").addEventListener('tap', function() {
 			var ids = [{
@@ -592,7 +600,18 @@
 				}
 			});
 		});
+		
+		// 退出登录
+		document.getElementById('SignUp').addEventListener('tap',function(){
+			CarMaid.UserInfo.LoginCookies('');
+			plus.navigator.removeCookie('http://120.25.60.120'); //TODO 移除不了 
+			plus.navigator.removeAllCookie();
+			var s = CarMaid.UserInfo.LoginCookies();
+			console.log(s);
 
+			mui.back();
+		});
+		
 		function shareMessage(share, ex) {
 				var msg = {
 					extra: {
@@ -840,6 +859,8 @@
 				var _slider = mui(slider).slider();
 			}
 		}
+	
+		
 	</script>
 
 </html>

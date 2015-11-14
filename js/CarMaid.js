@@ -339,24 +339,73 @@ var CarMaid = {};
 			});
 		},
 		InitVehicleModel: function(onSuccess, onError, retry) {
-			var url = 'http://www.google.com';
+			
+			var url = 'http://120.25.60.120:8080/api/vehicle/GetUserVehicleModel';
 			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
 				timeout: 5000,
-				success: function() {
+				success: function(data) {
+					
+					var parentDIV = document.getElementById('VehileModelCollection');
+					
+					for(var i = 0; i< data.length; i++){
+						var div = document.createElement('div');
+						div.className = 'mui-table-view-cell ';
+						div.id = data[i].index;
+						
+						// 删除。 编辑
+						var sliderDIV = document.createElement('div');
+						sliderDIV.className = 'mui-slider-right mui-disabled';
+						// 编辑
+						var compose = document.createElement('a');
+						compose.className = 'mui-btn mui-btn-yellow mui-icon mui-icon-compose';
+						compose.setAttribute('data-id',data[i].index);
+						// 删除
+						var trash = document.createElement('a');
+						trash.className = 'mui-btn mui-btn-red mui-icon mui-icon-trash';
+						trash.setAttribute('data-id',data[i].index);
+						sliderDIV.appendChild(compose);
+						sliderDIV.appendChild(trash);
+						
+						var sliderHandleDIV = document.createElement('div');
+						sliderHandleDIV.className = 'mui-slider-handle mui-radio';
+						var img = document.createElement('img');
+						img.className = 'mui-media-object mui-pull-left';
+						img.src = data[i].imageUrl;
+						console.log(data[i].imageUrl);
+						var bodyDIV = document.createElement('div');
+						bodyDIV.className = 'mui-media-body';
+						bodyDIV.innerText = data[i].vehicleName;
+						var bodyP = document.createElement('p');
+						bodyP.className = 'mui-ellipsis';
+						bodyP.innerText = data[i].mileageAndBuyVehicleDate;
+						bodyDIV.appendChild(bodyP);
+						var input = document.createElement('input');
+						input.name = 'radio1';
+						input.type = 'radio';
+						input.checked = data[i].isDefault;
+						sliderHandleDIV.appendChild(img);
+						sliderHandleDIV.appendChild(bodyDIV);
+						sliderHandleDIV.appendChild(input);
 
-
+						div.appendChild(sliderDIV);
+						div.appendChild(sliderHandleDIV);
+						
+						parentDIV.appendChild(div);
+						
+					}
+					
 					onSuccess();
 					console.log('success');
 				},
-				error: function() {
+				error: function(xhr, type, errorThrown) {
 					--retry;
 					console.log(retry);
 					if (retry > 0) {
 						return vehicle.InitVehicleModel(onSuccess, onError, retry);
 					}
-
+					console.log(xhr.response);
 					onError();
 				}
 			})
@@ -402,7 +451,7 @@ var CarMaid = {};
     		exp.setTime(exp.getTime() + strsec * 1);
 
 			var tmp = name + "=" + value + ";expires=" + exp.toGMTString() + ";path=/";
-			console.log('tmp:'+tmp);
+			console.log(tmp);
 			plus.navigator.setCookie(url, tmp);
 		},
 		getCookies: function(url) {
