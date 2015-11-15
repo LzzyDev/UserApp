@@ -379,7 +379,7 @@ var CarMaid = {};
 						bodyDIV.innerText = data[i].vehicleName;
 						var bodyP = document.createElement('p');
 						bodyP.className = 'mui-ellipsis';
-						bodyP.innerText = data[i].mileageAndBuyVehicleDate;
+						bodyP.innerText = data[i].mileageAndBuyVehicleDate == '' ? "车辆信息尚未完善" : data[i].mileageAndBuyVehicleDate;
 						bodyDIV.appendChild(bodyP);
 						var input = document.createElement('input');
 						input.name = 'radio1';
@@ -406,11 +406,39 @@ var CarMaid = {};
 						return vehicle.InitVehicleModel(onSuccess, onError, retry);
 					}
 					console.log(xhr.response);
-					onError();
+					onError(xhr, type, errorThrown);
 				}
 			})
+		},
+		AddVehicleModel:function(vmid,onSuccess,onError,retry){
+			
+			var url = 'http://120.25.60.120:8080/api/vehicle/AddVehicleModel?VMID=' + vmid + '&IsDefault=' + true;
+			
+			mui.ajax(url,{
+				dataType: 'json',
+				type: 'post',
+				timeout: 5000,
+				success:function(data){
+					
+					onSuccess(data);
+				},
+				error:function(xhr, type, errorThrown){
+					--retry;
+					console.log(retry);
+					if (retry > 0) {
+						return vehicle.AddVehicleModel(vmid,onSuccess,onError,retry);
+					}
+					console.log(xhr.response);
+					onError();
+				}
+			});
+			
+		},
+		RemoveVehicleModel:function(){
+			
 		}
-
+		
+		
 	}
 
 	$.Vehicle = vehicle;

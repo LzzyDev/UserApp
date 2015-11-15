@@ -27,9 +27,15 @@
 			.mui-content>.mui-table-view:first-child {
 				margin-top: 0px;
 			}
-			.mui-checkbox input[type=checkbox], .mui-radio input[type=radio]{
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
 				right: 0px;
 			}
+			.mui-media-body{
+				margin-right: 25px;
+			}
+			
 			.error {
 				text-align: center;
 				margin: 0 auto;
@@ -76,7 +82,7 @@
 					<div class="mui-slider-handle mui-radio">
 						<img class="mui-media-object mui-pull-left" src="../../images/60x60.gif" />
 						<div class="mui-media-body">
-							XXXX
+							XXXX新车上路时间新车上路时间新车上路时间
 							<p class="mui-ellipsis">新车上路时间：2014-08-08</p>
 						</div>
 						<input name="radio1" type="radio">
@@ -105,20 +111,24 @@
 				getVehicleModelForCookies();
 			}
 
-			function OnErrorCallback() {
+			function OnErrorCallback(xhr, type, errorThrown) {
 				loading.style.display = 'none';
+				
+				if(type == 'timeout')
+					mui.toast('服务器罢工啦');
+				
 				//error.style.display = 'bli'
 				getVehicleModelForCookies();
 			}
 			// 获取cookies 中的车型。
 			function getVehicleModelForCookies() {
-				
 			}
 			mui.plusReady(function() {
 				// 判断是否已经登陆。
 				if (!CarMaid.UserInfo.Has_login()) {
 					document.getElementById('VehicleAdd').innerText = '更改';
 				}
+				console.log(plus.webview.currentWebview().id);
 				CarMaid.Vehicle.InitVehicleModel(OnSuccessCallback, OnErrorCallback, 3);
 			});
 			document.getElementById('addVehileModel').addEventListener('tap', function() {
@@ -133,21 +143,27 @@
 				});
 			});
 			mui('#VehileModelCollection').on('tap', '.mui-slider-handle', function() {
-				
 				var input = this.querySelector('.mui-slider-handle input');
 				input.checked = true;
 				console.log('点击内容');
 			});
 			// 编辑车型
-			mui('#VehileModelCollection').on('tap','.mui-icon-compose',function(){
+			mui('#VehileModelCollection').on('tap', '.mui-icon-compose', function() {
 				console.log('edit');
 				console.log(this.getAttribute('data-id'));
 			});
 			// 删除车型
-			mui('#VehileModelCollection').on('tap','.mui-icon-trash',function(){
-			 	console.log('del');
+			mui('#VehileModelCollection').on('tap', '.mui-icon-trash', function() {
+				console.log('del');
 				console.log(this.getAttribute('data-id'));
 			});
+			document.addEventListener('AddVehileModel', function(e) {
+
+				loading.style.display = 'block';
+				document.getElementById('VehileModelCollection').innerHTML = "";
+				CarMaid.Vehicle.InitVehicleModel(OnSuccessCallback, OnErrorCallback, 3);
+
+			}, false);
 		</script>
 	</body>
 
