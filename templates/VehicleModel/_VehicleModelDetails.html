@@ -12,15 +12,16 @@
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">车辆信息</h1>
-			<a class="mui-pull-right" style="margin: 15px 0;">确定</a>
+			<a id="ok" class="mui-pull-right" style="margin: 15px 0;">确定</a>
 		</header>
 		<div class="mui-content">
-			<div style="background-color: white;height: 60px; padding: 5px;">
-				<div style="width: 50%;height:100%;margin: 0 auto;">
-					<img src="../../images/logo.png" style="height: 100%;width: auto;float: left;" />
-					<div style="height: 100%;margin-left:10px;margin-top:10px;float: left;">
-						<b>宝马</b>
-						<p>320i&nbsp;2007年</p>
+			<div style="background-color: white;height: 50px; padding: 5px;">
+				<div style="width:100%;height:100%;margin: 0 auto;">
+					<img id="vehicleImage" src="../../images/logo.png" style="height: 100%;width: auto;float: left;" />
+					<div style="height: 100%;margin-left:10px;float: left;">
+						<b id="vehicleName"></b>
+						<p id="buyVehicleDate"><span class="mui-icon mui-icon-info" style="font-size: 18px; color: red;margin-top: 2px;"><span style="font-size: 14px;">车辆信息尚未完善</span></span>
+						</p>
 					</div>
 				</div>
 			</div>
@@ -28,14 +29,14 @@
 				<ul class="mui-table-view mui-table-view-chevron">
 					<li class="mui-table-view-cell">
 						<div class="mui-input-row">
-							<label style="text-align: right;padding: 10px 0px;width: 40%;"><b>公里数：</b></label>
-							<input style="width: 60%;padding-left: 15px;" type="number" class="mui-input-clear mui-input" placeholder="请输入公里数">
+							<label style="text-align: right;padding: 10px 0px;width: 40%;">公里数：</label>
+							<input id="mileage" style="width: 60%;padding-left: 15px;" type="number" class="mui-input-clear mui-input" placeholder="请输入公里数">
 						</div>
 					</li>
 					<li class="mui-table-view-cell">
 						<a id='pickDateBtn' href="#notifications" class="mui-navigate-right">
 							<div class="mui-input-row">
-								<label style="text-align: right;padding: 10px 0px;width: 40%;"><b>新车上路时间：</b></label>
+								<label style="text-align: right;padding: 10px 0px;width: 40%;">新车上路时间：</label>
 								<label id="info" class="mui-input-clear mui-input" style="width: 60%;"></label>
 							</div>
 						</a>
@@ -43,10 +44,11 @@
 				</ul>
 			</div>
 			<div class="mui-content-padded">
-				<button style="background-color: orange;border: none;margin-top:20px ;" class="mui-btn mui-btn-block mui-btn-primary">删除车型信息</button>
+				<button id="delete" style="background-color: orange;border: none;margin-top:20px ;" class="mui-btn mui-btn-block mui-btn-primary">删除车型信息</button>
 			</div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/CarMaid.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
 			//			mui.init();
 			//mui初始化
@@ -54,25 +56,135 @@
 				swipeBack: true //启用右滑关闭功能
 			});
 			var info = document.getElementById("info");
-			document.getElementById("pickDateBtn").addEventListener('tap', function() {
-				var dDate = new Date();
-				dDate.setFullYear(2014, 7, 16);
-				var minDate = new Date();
-				minDate.setFullYear(2010, 0, 1);
-				var maxDate = new Date();
-				maxDate.setFullYear(2016, 11, 31);
-				plus.nativeUI.pickDate(function(e) {
-					var d = e.date;
-					info.innerText = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-				}, function(e) {
-					info.innerText = "您没有选择日期";
-				}, {
-					title: "请选择日期",
-					date: dDate,
-					minDate: minDate,
-					maxDate: maxDate
+			var mileage = document.getElementById("mileage");
+			var vehicleName = document.getElementById("vehicleName");
+			var buyVehicleDate = document.getElementById("buyVehicleDate");
+			var vehicleImage = document.getElementById("vehicleImage");
+			var self = null;
+
+			function SetpickDate(nowDate, minDate, maxDate) {
+				document.getElementById("pickDateBtn").addEventListener('tap', function() {
+					plus.nativeUI.pickDate(function(e) {
+						var d = e.date;
+						info.innerText = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+					}, function(e) {
+					}, {
+						title: "请选择购车日期",
+						date: nowDate,
+						minDate: minDate,
+						maxDate: maxDate
+					});
 				});
-			})
+			};
+
+			function SuccessCallback(data) {
+				console.log(JSON.stringify(data));
+				var minDate = new Date();
+				var maxDate = new Date();
+				minDate.setFullYear(data.year, 0, 1);
+				if (data.year > new Date().getFullYear()) { // 如果车型的年份 大于 本年度
+					maxDate.setFullYear(data.year, 11, 31);
+				} else {
+					maxDate.setFullYear(new Date().getFullYear(), 11, 31);
+				}
+				var nowDate = new Date();
+				if (data.buyVehicleDate) { // 如果车型的购车时间不为空，则 当前时间设置为购车时间，否则为 最小时间；
+					nowDate = new Date(Date.parse(data.buyVehicleDate));
+					info.innerText = data.buyVehicleDate;
+					buyVehicleDate.innerText = data.mileageAndBuyVehicleDate;
+					console.log(data.buyVehicleDate);
+				} else {
+					nowDate.setFullYear(data.year, 0, 1);
+				}
+				SetpickDate(nowDate, minDate, maxDate);
+				if (data.mileage) {
+					mileage.value = data.mileage;
+				}
+				console.log(data.imageUrl)
+				vehicleImage.src = data.imageUrl;
+				vehicleName.innerText = data.vehicleName;
+				self.show("slide-in-right", 300);
+				plus.nativeUI.closeWaiting();
+			}
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
+				// 未登录时，显示storage中的车型数据
+				console.log(self.index.toString());
+				if (!CarMaid.UserInfo.Has_login() || self.index == 'null') {
+					console.log('noLogin');
+					var vm = plus.storage.getItem('VehicleModel');
+					var obj = JSON.parse(vm);
+					SuccessCallback(obj);
+					return;
+				}
+				var index = self.index;
+				var url = 'http://120.25.60.120:8080/api/vehicle/GetVehicle?VMID=' + index + '&b=' + true;
+				mui.ajax(url, {
+					dataType: 'json',
+					type: 'get',
+					timeout: 5000,
+					success: function(data) {
+						SuccessCallback(data);
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(xhr.response);
+						console.log(type);
+						mui.toast('好像服务器罢工了~~');
+						self.close();
+						plus.nativeUI.closeWaiting();
+					}
+				});
+			});
+			// 提交
+			document.getElementById('ok').addEventListener('tap', function() {
+				var m = mileage.value;
+				var reg = new RegExp("^[1-9][0-9]*$");
+				if (m == '' || !reg.test(m)) {
+					mui.toast('请输入正确的公里数');
+					return;
+				}
+				var buyDate = info.innerText;
+				if (!Date.parse(buyDate)) {
+					mui.toast('请选择新车上路时间');
+					return;
+				}
+				plus.nativeUI.showWaiting();
+				
+				//未登录时，只将修改保存到 storage 中。
+				if(!CarMaid.UserInfo.Has_login()){
+					var data = JSON.parse(plus.storage.getItem('VehicleModel'));
+					data.mileage = m;
+					data.buyVehicleDate = buyDate;
+					//当前行驶里程:741 | 新车上路时间:2015/1/18
+					data.mileageAndBuyVehicleDate = '当前行驶里程:' + m + ' | 新车上路时间:' + buyDate;
+					plus.storage.setItem('VehicleModel',JSON.stringify(data));
+					console.log(data.mileage);
+					console.log(data.buyVehicleDate);
+					var parent = plus.webview.getWebviewById('default-sub');
+					mui.fire(parent, 'UpVehileModel', {
+						data: data
+					});
+					plus.nativeUI.closeWaiting();
+					self.close();
+					return;
+				}
+				
+				CarMaid.Vehicle.EditVehicleModel(self.vmid, m, buyDate, function(data) {
+					var parent = plus.webview.getWebviewById('default-sub');
+					mui.fire(parent, 'UpVehileModel', {
+						data: data
+					});
+					plus.nativeUI.closeWaiting();
+					self.close();
+				}, function() {
+					plus.nativeUI.closeWaiting();
+					mui.toast('好像服务器罢工了~~');
+				}, 0);
+			});
+			// 删除
+			document.getElementById('delete').addEventListener('tap', function() {
+				var vmid = self.vmid;
+			});
 		</script>
 	</body>
 

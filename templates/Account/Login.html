@@ -206,6 +206,7 @@
 					mui.toast('请输入正确的手机号');
 					return;
 				}
+				document.getElementById('sendVerifyCode').className = "mui-btn mui-btn-warning mui-disabled";
 				var url = 'http://120.25.60.120:8080/api/Member/SendVerifyCode?phoneNumber=' + phone;
 				mui.ajax(url, {
 					dataType: 'text',
@@ -222,6 +223,7 @@
 					error: function(xhr, type, errorThrown) {
 						var obj = JSON.parse(xhr.response);
 						mui.toast(obj.message);
+						document.getElementById('sendVerifyCode').className = "mui-btn mui-btn-warning";
 					}
 				});
 				console.log(phone);
@@ -256,7 +258,7 @@
 						if(data.success){
 							CarMaid.UserInfo.LoginCookies(data.message);
 							CarMaid.UserInfo.Phone(phone);
-
+							console.log('LoginCookies:' + CarMaid.UserInfo.LoginCookies());
 							mui.back();
 						}else {
 							mui.toast(data.message);

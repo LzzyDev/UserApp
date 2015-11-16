@@ -32,8 +32,10 @@
 			.mui-radio input[type=radio] {
 				right: 0px;
 			}
-			.mui-media-body{
+			
+			.mui-media-body {
 				margin-right: 25px;
+				font-size: 16px;
 			}
 			
 			.error {
@@ -108,27 +110,36 @@
 
 			function OnSuccessCallback() {
 				loading.style.display = 'none';
-				getVehicleModelForCookies();
+				getVehicleModelForStorage();
 			}
 
 			function OnErrorCallback(xhr, type, errorThrown) {
 				loading.style.display = 'none';
-				
-				if(type == 'timeout')
+				console.log(type);
+				if (type == 'timeout')
 					mui.toast('服务器罢工啦');
-				
+
 				//error.style.display = 'bli'
-				getVehicleModelForCookies();
+				getVehicleModelForStorage();
 			}
-			// 获取cookies 中的车型。
-			function getVehicleModelForCookies() {
+			// 获取 Storage 中的车型。
+			function getVehicleModelForStorage() {
+				var vm = plus.storage.getItem('VehicleModel');
+				if(!vm) return;
+				var obj = JSON.parse(vm);
+				console.log(obj.index);
+				// 判断是否该车已经显示
+				var div = document.getElementById(obj.vmIndex);
+				if(div) return;
+				
+				AddSingleVM(obj,false);
+				console.log('111');
 			}
 			mui.plusReady(function() {
 				// 判断是否已经登陆。
 				if (!CarMaid.UserInfo.Has_login()) {
 					document.getElementById('VehicleAdd').innerText = '更改';
 				}
-				console.log(plus.webview.currentWebview().id);
 				CarMaid.Vehicle.InitVehicleModel(OnSuccessCallback, OnErrorCallback, 3);
 			});
 			document.getElementById('addVehileModel').addEventListener('tap', function() {
@@ -150,20 +161,115 @@
 			// 编辑车型
 			mui('#VehileModelCollection').on('tap', '.mui-icon-compose', function() {
 				console.log('edit');
-				console.log(this.getAttribute('data-id'));
+				var vmid = this.getAttribute('data-vmid');
+				var id = this.getAttribute('data-id');
+				console.log(id);
+				mui.openWindow({
+					url: '_VehicleModelDetails.html',
+					id: '_VehicleModelDetails.html',
+					show: {
+						autoShow: false,
+						aniShow: 'slide-in-right',
+						duration: 300
+					},
+					extras: {
+						vmid: vmid,
+						index : id
+					}
+				});
 			});
 			// 删除车型
 			mui('#VehileModelCollection').on('tap', '.mui-icon-trash', function() {
 				console.log('del');
 				console.log(this.getAttribute('data-id'));
-			});
-			document.addEventListener('AddVehileModel', function(e) {
+				plus.nativeUI.showWaiting();
+				
+				if(this.getAttribute('data-id') != 'null'){
+					CarMaid.Vehicle.RemoveVehicleModel(this.getAttribute('data-id')); // 移除该车型。					
+				}else{
+					plus.storage.removeItem('VehicleModel');
+					var bodyP = document.getElementById('null');
+					bodyP.parentNode.removeChild(bodyP);
+					plus.nativeUI.closeWaiting();
+				}
+				
 
+			});
+			// 登陆用户 添加车型后的事件
+			document.addEventListener('AddVehileModel', function(e) {
 				loading.style.display = 'block';
 				document.getElementById('VehileModelCollection').innerHTML = "";
 				CarMaid.Vehicle.InitVehicleModel(OnSuccessCallback, OnErrorCallback, 3);
-
 			}, false);
+			// 游客 添加车型后的事件
+			document.addEventListener('AddVehileModelForTourist', function(e) {
+				loading.style.display = 'block';
+				var data = e.detail.data;
+				console.log(JSON.stringify(data));
+				AddSingleVM(data,true);
+				loading.style.display = 'none';
+			}, false);
+			// 编辑车型信息
+			document.addEventListener('UpVehileModel',function(e){
+				var data = e.detail.data;
+				console.log('UpVehileModel:'+JSON.stringify(data));
+				document.getElementById('bodyP_'+data.vmIndex).innerText = data.mileageAndBuyVehicleDate;
+				
+			});
+			
+			
+			function AddSingleVM(data,isClear){
+				var parentDIV = document.getElementById('VehileModelCollection');
+				if(isClear)
+					parentDIV.innerHTML = '';
+				var div = document.createElement('div');
+				div.className = 'mui-table-view-cell ';
+				div.id = data.index;
+				// 删除。 编辑
+				var sliderDIV = document.createElement('div');
+				sliderDIV.className = 'mui-slider-right mui-disabled';
+				// 编辑
+				var compose = document.createElement('a');
+				compose.className = 'mui-btn mui-btn-yellow mui-icon mui-icon-compose';
+				compose.setAttribute('data-id', data.index);
+				compose.setAttribute('data-vmid',data.vmIndex);
+				// 删除
+				var trash = document.createElement('a');
+				trash.className = 'mui-btn mui-btn-red mui-icon mui-icon-trash';
+				trash.setAttribute('data-id', data.index);
+				sliderDIV.appendChild(compose);
+				sliderDIV.appendChild(trash);
+				var sliderHandleDIV = document.createElement('div');
+				sliderHandleDIV.className = 'mui-slider-handle mui-radio';
+				var img = document.createElement('img');
+				img.style.width = 42;
+				img.style.height = 42;
+				img.className = 'mui-media-object mui-pull-left';
+				img.src = data.imageUrl;
+				console.log(data.imageUrl);
+				var bodyDIV = document.createElement('div');
+				bodyDIV.className = 'mui-media-body';
+				bodyDIV.innerText = data.vehicleName;
+				var bodyP = document.createElement('p');
+				bodyP.id = 'bodyP_' + data.vmIndex;
+				bodyP.className = 'mui-ellipsis';
+				if(isClear)
+					bodyP.innerText = '车辆信息尚未完善';
+				else
+					bodyP.innerText = data.mileageAndBuyVehicleDate;
+				bodyDIV.appendChild(bodyP);
+				var input = document.createElement('input');
+				input.name = 'radio1';
+				input.type = 'radio';
+				input.checked = true;
+				sliderHandleDIV.appendChild(img);
+				sliderHandleDIV.appendChild(bodyDIV);
+				sliderHandleDIV.appendChild(input);
+				div.appendChild(sliderDIV);
+				div.appendChild(sliderHandleDIV);
+				parentDIV.appendChild(div);
+			}
+			
 		</script>
 	</body>
 

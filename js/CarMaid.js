@@ -333,20 +333,20 @@ var CarMaid = {};
 					if (retry > 0) {
 						return vehicle.GetVehicleModel(vsid, onSuccess, onError, retry);
 					}
-
+					console.log(xhr.response);
 					onError();
 				}
 			});
 		},
 		InitVehicleModel: function(onSuccess, onError, retry) {
-			
+			//http://120.25.60.120:8080/api/vehicle/GetUserVehicleModel
 			var url = 'http://120.25.60.120:8080/api/vehicle/GetUserVehicleModel';
 			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
 				timeout: 5000,
 				success: function(data) {
-					
+					console.log(JSON.stringify(data));
 					var parentDIV = document.getElementById('VehileModelCollection');
 					
 					for(var i = 0; i< data.length; i++){
@@ -361,6 +361,7 @@ var CarMaid = {};
 						var compose = document.createElement('a');
 						compose.className = 'mui-btn mui-btn-yellow mui-icon mui-icon-compose';
 						compose.setAttribute('data-id',data[i].index);
+						compose.setAttribute('data-vmid',data[i].vmIndex);
 						// 删除
 						var trash = document.createElement('a');
 						trash.className = 'mui-btn mui-btn-red mui-icon mui-icon-trash';
@@ -372,12 +373,15 @@ var CarMaid = {};
 						sliderHandleDIV.className = 'mui-slider-handle mui-radio';
 						var img = document.createElement('img');
 						img.className = 'mui-media-object mui-pull-left';
+						img.style.width = 42;
+						img.style.height = 42;
 						img.src = data[i].imageUrl;
 						console.log(data[i].imageUrl);
 						var bodyDIV = document.createElement('div');
 						bodyDIV.className = 'mui-media-body';
 						bodyDIV.innerText = data[i].vehicleName;
 						var bodyP = document.createElement('p');
+						bodyP.id = 'bodyP_' + data[i].vmIndex;
 						bodyP.className = 'mui-ellipsis';
 						bodyP.innerText = data[i].mileageAndBuyVehicleDate == '' ? "车辆信息尚未完善" : data[i].mileageAndBuyVehicleDate;
 						bodyDIV.appendChild(bodyP);
@@ -434,10 +438,53 @@ var CarMaid = {};
 			});
 			
 		},
-		RemoveVehicleModel:function(){
-			
+		RemoveVehicleModel:function(id){
+			var url = 'http://120.25.60.120:8080/api/vehicle/RemoveVehicleModel?id=' + id;
+			mui.ajax(url,{
+				dataType: 'json',
+				type: 'post',
+				timeout: 5000,
+				success:function(data){
+					console.log('remove vehicle');
+					
+					var ChildDIV = document.getElementById(id);
+					ChildDIV.parentNode.removeChild(ChildDIV);
+					
+					plus.nativeUI.closeWaiting();
+
+				},
+				error:function(xhr, type, errorThrown){
+					
+					console.log(xhr.response);
+					mui.toast('删除失败！');
+					plus.nativeUI.closeWaiting();
+				}
+			});
+		},
+		EditVehicleModel:function(vmid,mileage,buyVehicleDate,onSuccess,onError,retry){
+			var url = 'http://120.25.60.120:8080/api/vehicle/AddVehicleModel?VMID=' + vmid + '&Mileage=' + mileage 
+				+ '&date=' +buyVehicleDate;
+				
+				console.log(url);
+			mui.ajax(url,{
+				dataType: 'json',
+				type: 'post',
+				timeout: 5000,
+				success:function(data){
+					console.log('edit vehicle');
+					onSuccess(data);
+				},
+				error:function(xhr, type, errorThrown){
+					--retry;
+					console.log(retry);
+					if (retry > 0) {
+						return vehicle.EditVehicleModel(vmid,mileage,buyVehicleDate,onSuccess,onError,retry);
+					}
+					console.log(xhr.response);
+					onError();
+				}
+			});
 		}
-		
 		
 	}
 

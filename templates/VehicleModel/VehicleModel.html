@@ -121,6 +121,7 @@
 						// 触发事件
 						mui.fire(sub, 'AddVehileModel', {});
 						// 保存到本地数据存储区
+						console.log(JSON.stringify(data));
 						plus.storage.setItem('VehicleModel', JSON.stringify(data));
 						console.log('VehicleModel:' + plus.storage.getItem('VehicleModel'));
 						// 关闭系统等待框
@@ -138,27 +139,33 @@
 					}, 3);
 				} else { // 未登录
 					// 保存到本地数据存储区
-					var url = 'http://120.25.60.120:8080/api/vehicle/GetVehicleModel?VMID=' + this.id;
-					mui.ajax('url',{
+					var url = 'http://120.25.60.120:8080/api/vehicle/GetVehicle?VMID=' + this.id;
+					mui.ajax(url, {
 						dataType: 'json',
 						type: 'get',
 						timeout: 5000,
-						success:function(data){
+						success: function(data) {
 							
+							plus.storage.setItem('VehicleModel', JSON.stringify(data));
+
+							// 触发添加车型事件
+							var sub = plus.webview.getWebviewById('default-sub');
+							mui.fire(sub,'AddVehileModelForTourist',{
+								data:data
+							});
+							// 关闭窗口。
+							var vb = plus.webview.getWebviewById('VehicleBrandList.html');
+							var vm = plus.webview.getWebviewById('VehicleManufacturer.html');
+							var self = plus.webview.currentWebview();
+							vb.close();
+							vm.close();
+							self.close();
 						},
-						error:function(){
-							
+						error: function() {
+							mui.toast('好像服务器罢工了~~');
+							plus.nativeUI.closeWaiting();
 						}
-					})
-					
-					plus.storage.setItem('VehicleModel', JSON.stringify(data));
-					// 关闭窗口。
-					var vb = plus.webview.getWebviewById('VehicleBrandList.html');
-					var vm = plus.webview.getWebviewById('VehicleManufacturer.html');
-					var self = plus.webview.currentWebview();
-					vb.close();
-					vm.close();
-					self.close();
+					});
 				}
 				console.log(this.id);
 			});
