@@ -139,7 +139,7 @@
 					}, 3);
 				} else { // 未登录
 					// 保存到本地数据存储区
-					var url = 'http://120.25.60.120:8080/api/vehicle/GetVehicle?VMID=' + this.id;
+					var url = 'http://api.cheshibang.com/api/vehicle/GetVehicle?VMID=' + this.id;
 					mui.ajax(url, {
 						dataType: 'json',
 						type: 'get',

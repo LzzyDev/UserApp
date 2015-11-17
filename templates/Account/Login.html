@@ -207,7 +207,7 @@
 					return;
 				}
 				document.getElementById('sendVerifyCode').className = "mui-btn mui-btn-warning mui-disabled";
-				var url = 'http://120.25.60.120:8080/api/Member/SendVerifyCode?phoneNumber=' + phone;
+				var url = 'http://api.cheshibang.com/api/Member/SendVerifyCode?phoneNumber=' + phone;
 				mui.ajax(url, {
 					dataType: 'text',
 					type: 'post',
@@ -248,7 +248,7 @@
 				var phone = document.getElementById('PhoneNumber').value;
 				phone = jsencrypt('123@Abc',phone); // 加密 电话号码。
 				console.log(phone);
-				var url = 'http://120.25.60.120:8080/api/Account/SignIn?phoneNumber=' + phone;
+				var url = 'http://api.cheshibang.com/api/Account/SignIn?phoneNumber=' + phone;
 				mui.ajax(url,{
 					dataType: 'json',
 					type: 'post',

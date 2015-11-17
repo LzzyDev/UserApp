@@ -63,7 +63,7 @@ var CarMaid = {};
 		 * retry 为重试的次数
 		 */
 		initBanners: function(onSuccess, onError, retry) {
-			var url = 'http://120.25.60.120:8080/api/init/getbanners';
+			var url = 'http://api.cheshibang.com/api/init/getbanners';
 			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
@@ -125,7 +125,7 @@ var CarMaid = {};
 
 	var vehicle = {
 		GetVehicleBrands: function(onSuccess, onError, retry) {
-			var url = 'http://120.25.60.120:8080/api/Vehicle/GetVehicleBrands';
+			var url = 'http://api.cheshibang.com/api/Vehicle/GetVehicleBrands';
 			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
@@ -213,7 +213,7 @@ var CarMaid = {};
 			});
 		},
 		GetVehicleSeries: function(VBID, onSuccess, onError, retry) {
-			var url = 'http://120.25.60.120:8080/api/vehicle/GetVehicleSeries?VBID=' + VBID;
+			var url = 'http://api.cheshibang.com/api/vehicle/GetVehicleSeries?VBID=' + VBID;
 			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
@@ -278,7 +278,7 @@ var CarMaid = {};
 			});
 		},
 		GetVehicleModel: function(vsid, onSuccess, onError, retry) {
-			var url = "http://120.25.60.120:8080/api/vehicle/GetVehicleModel?vsid=" + vsid;
+			var url = "http://api.cheshibang.com/api/vehicle/GetVehicleModel?vsid=" + vsid;
 			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
@@ -339,8 +339,8 @@ var CarMaid = {};
 			});
 		},
 		InitVehicleModel: function(onSuccess, onError, retry) {
-			//http://120.25.60.120:8080/api/vehicle/GetUserVehicleModel
-			var url = 'http://120.25.60.120:8080/api/vehicle/GetUserVehicleModel';
+			//http://api.cheshibang.com/api/vehicle/GetUserVehicleModel
+			var url = 'http://api.cheshibang.com/api/vehicle/GetUserVehicleModel';
 			mui.ajax(url, {
 				dataType: 'json',
 				type: 'get',
@@ -416,7 +416,7 @@ var CarMaid = {};
 		},
 		AddVehicleModel:function(vmid,onSuccess,onError,retry){
 			
-			var url = 'http://120.25.60.120:8080/api/vehicle/AddVehicleModel?VMID=' + vmid + '&IsDefault=' + true;
+			var url = 'http://api.cheshibang.com/api/vehicle/AddVehicleModel?VMID=' + vmid + '&IsDefault=' + true;
 			
 			mui.ajax(url,{
 				dataType: 'json',
@@ -439,7 +439,7 @@ var CarMaid = {};
 			
 		},
 		RemoveVehicleModel:function(id){
-			var url = 'http://120.25.60.120:8080/api/vehicle/RemoveVehicleModel?id=' + id;
+			var url = 'http://api.cheshibang.com/api/vehicle/RemoveVehicleModel?id=' + id;
 			mui.ajax(url,{
 				dataType: 'json',
 				type: 'post',
@@ -462,7 +462,7 @@ var CarMaid = {};
 			});
 		},
 		EditVehicleModel:function(vmid,mileage,buyVehicleDate,onSuccess,onError,retry){
-			var url = 'http://120.25.60.120:8080/api/vehicle/AddVehicleModel?VMID=' + vmid + '&Mileage=' + mileage 
+			var url = 'http://api.cheshibang.com/api/vehicle/AddVehicleModel?VMID=' + vmid + '&Mileage=' + mileage 
 				+ '&date=' +buyVehicleDate;
 				
 				console.log(url);
@@ -546,7 +546,7 @@ var CarMaid = {};
 
 	var USERNAME = 'username';
 	var PASSWORD = 'password';
-	var COOKIES_URL = 'http://120.25.60.120';
+	var COOKIES_URL = 'http://api.cheshibang.com';
 	var PHONE = 'userphone';
 
 	var UserInfo = {
