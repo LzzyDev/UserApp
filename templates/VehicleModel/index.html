@@ -255,8 +255,10 @@
 				bodyP.className = 'mui-ellipsis';
 				if(isClear)
 					bodyP.innerText = '车辆信息尚未完善';
-				else
-					bodyP.innerText = data.mileageAndBuyVehicleDate;
+				else{
+					bodyP.innerText = data.mileageAndBuyVehicleDate ? data.mileageAndBuyVehicleDate:"车辆信息尚未完善";				
+				}
+
 				bodyDIV.appendChild(bodyP);
 				var input = document.createElement('input');
 				input.name = 'radio1';
