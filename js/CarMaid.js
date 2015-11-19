@@ -371,6 +371,10 @@ var CarMaid = {};
 						
 						var sliderHandleDIV = document.createElement('div');
 						sliderHandleDIV.className = 'mui-slider-handle mui-radio';
+						sliderHandleDIV.id = 'Handle_' + data[i].vmIndex;
+						sliderHandleDIV.setAttribute('data-vmid', data[i].vmIndex);
+						sliderHandleDIV.setAttribute('data-mileage', data[i].mileage);
+						sliderHandleDIV.setAttribute('data-buyVehicleDate', data[i].buyVehicleDate);
 						var img = document.createElement('img');
 						img.className = 'mui-media-object mui-pull-left';
 						img.style.width = 42;

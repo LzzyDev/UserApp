@@ -129,7 +129,8 @@
 				var obj = JSON.parse(vm);
 				console.log(obj.index);
 				// 判断是否该车已经显示
-				var div = document.getElementById(obj.vmIndex);
+				var div = document.getElementById('Handle_' + obj.vmIndex);
+				console.log(div);
 				if(div) return;
 				
 				AddSingleVM(obj,false);
@@ -153,10 +154,43 @@
 					}
 				});
 			});
+			
+			// 选择车型事件
 			mui('#VehileModelCollection').on('tap', '.mui-slider-handle', function() {
 				var input = this.querySelector('.mui-slider-handle input');
 				input.checked = true;
 				console.log('点击内容');
+				plus.nativeUI.showWaiting();
+				var vmid = this.getAttribute('data-vmid');
+				var mileage = this.getAttribute('data-mileage');
+				var buyVehicleDate = this.getAttribute('data-buyVehicleDate');
+				console.log(vmid);
+				console.log(mileage);
+				console.log(buyVehicleDate);
+				
+				var url = 'http://api.cheshibang.com/api/vehicle/AddVehicleModel?VMID=' + vmid + '&Mileage=' + mileage + '&date=' + buyVehicleDate + '&IsDefault=true';
+				console.log(url);
+					mui.ajax(url, {
+						dataType: 'json',
+						type: 'post',
+						timeout: 5000,
+						success: function(data) {
+							
+							plus.storage.setItem('VehicleModel', JSON.stringify(data));
+							
+							plus.nativeUI.closeWaiting();
+							
+							mui.back();
+
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(xhr.response);
+							console.log(type);
+							mui.toast('好像服务器罢工了~~');
+							plus.nativeUI.closeWaiting();
+						}
+					});
+				
 			});
 			// 编辑车型
 			mui('#VehileModelCollection').on('tap', '.mui-icon-compose', function() {
@@ -241,6 +275,10 @@
 				sliderDIV.appendChild(trash);
 				var sliderHandleDIV = document.createElement('div');
 				sliderHandleDIV.className = 'mui-slider-handle mui-radio';
+				sliderHandleDIV.id = 'Handle_' + data[i].vmIndex;
+				sliderHandleDIV.setAttribute('data-vmid', data.vmIndex);
+				sliderHandleDIV.setAttribute('data-mileage', data.mileage);
+				sliderHandleDIV.setAttribute('data-buyVehicleDate', data.buyVehicleDate);
 				var img = document.createElement('img');
 				img.style.width = 42;
 				img.style.height = 42;
