@@ -118,22 +118,20 @@
 				console.log(type);
 				if (type == 'timeout')
 					mui.toast('服务器罢工啦');
-
 				//error.style.display = 'bli'
 				getVehicleModelForStorage();
 			}
 			// 获取 Storage 中的车型。
 			function getVehicleModelForStorage() {
 				var vm = plus.storage.getItem('VehicleModel');
-				if(!vm) return;
+				if (!vm) return;
 				var obj = JSON.parse(vm);
 				console.log(obj.index);
 				// 判断是否该车已经显示
 				var div = document.getElementById('Handle_' + obj.vmIndex);
 				console.log(div);
-				if(div) return;
-				
-				AddSingleVM(obj,false);
+				if (div) return;
+				AddSingleVM(obj, false);
 				console.log('111');
 			}
 			mui.plusReady(function() {
@@ -154,7 +152,6 @@
 					}
 				});
 			});
-			
 			// 选择车型事件
 			mui('#VehileModelCollection').on('tap', '.mui-slider-handle', function() {
 				var input = this.querySelector('.mui-slider-handle input');
@@ -167,30 +164,24 @@
 				console.log(vmid);
 				console.log(mileage);
 				console.log(buyVehicleDate);
-				
 				var url = 'http://api.cheshibang.com/api/vehicle/AddVehicleModel?VMID=' + vmid + '&Mileage=' + mileage + '&date=' + buyVehicleDate + '&IsDefault=true';
 				console.log(url);
-					mui.ajax(url, {
-						dataType: 'json',
-						type: 'post',
-						timeout: 5000,
-						success: function(data) {
-							
-							plus.storage.setItem('VehicleModel', JSON.stringify(data));
-							
-							plus.nativeUI.closeWaiting();
-							
-							mui.back();
-
-						},
-						error: function(xhr, type, errorThrown) {
-							console.log(xhr.response);
-							console.log(type);
-							mui.toast('好像服务器罢工了~~');
-							plus.nativeUI.closeWaiting();
-						}
-					});
-				
+				mui.ajax(url, {
+					dataType: 'json',
+					type: 'post',
+					timeout: 5000,
+					success: function(data) {
+						plus.storage.setItem('VehicleModel', JSON.stringify(data));
+						plus.nativeUI.closeWaiting();
+						mui.back();
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(xhr.response);
+						console.log(type);
+						mui.toast('好像服务器罢工了~~');
+						plus.nativeUI.closeWaiting();
+					}
+				});
 			});
 			// 编辑车型
 			mui('#VehileModelCollection').on('tap', '.mui-icon-compose', function() {
@@ -198,6 +189,8 @@
 				var vmid = this.getAttribute('data-vmid');
 				var id = this.getAttribute('data-id');
 				console.log(id);
+				var li = this.parentNode.parentNode;
+				mui.swipeoutClose(li);
 				mui.openWindow({
 					url: '_VehicleModelDetails.html',
 					id: '_VehicleModelDetails.html',
@@ -208,26 +201,34 @@
 					},
 					extras: {
 						vmid: vmid,
-						index : id
+						index: id
 					}
 				});
 			});
 			// 删除车型
 			mui('#VehileModelCollection').on('tap', '.mui-icon-trash', function() {
-				console.log('del');
-				console.log(this.getAttribute('data-id'));
-				plus.nativeUI.showWaiting();
-				
-				if(this.getAttribute('data-id') != 'null'){
-					CarMaid.Vehicle.RemoveVehicleModel(this.getAttribute('data-id')); // 移除该车型。					
-				}else{
-					plus.storage.removeItem('VehicleModel');
-					var bodyP = document.getElementById('null');
-					bodyP.parentNode.removeChild(bodyP);
-					plus.nativeUI.closeWaiting();
-				}
-				
-
+				var btnArray = ['确认', '取消'];
+				var li = this.parentNode.parentNode;
+				mui.confirm('确认删除车型？', '删除车型', btnArray, function(e) {
+					if (e.index == 0) {
+						// 删除操作
+						console.log('del');
+						console.log(this.getAttribute('data-id'));
+						plus.nativeUI.showWaiting();
+						if (this.getAttribute('data-id') != 'null') {
+							CarMaid.Vehicle.RemoveVehicleModel(this.getAttribute('data-id')); // 移除该车型。					
+						} else {
+							plus.storage.removeItem('VehicleModel');
+							var bodyP = document.getElementById('null');
+							bodyP.parentNode.removeChild(bodyP);
+							plus.nativeUI.closeWaiting();
+						}
+					} else {
+						setTimeout(function() {
+							mui.swipeoutClose(li);
+						}, 0);
+					}
+				});
 			});
 			// 登陆用户 添加车型后的事件
 			document.addEventListener('AddVehileModel', function(e) {
@@ -240,21 +241,20 @@
 				loading.style.display = 'block';
 				var data = e.detail.data;
 				console.log(JSON.stringify(data));
-				AddSingleVM(data,true);
+				AddSingleVM(data, true);
 				loading.style.display = 'none';
 			}, false);
 			// 编辑车型信息
-			document.addEventListener('UpVehileModel',function(e){
+			document.addEventListener('UpVehileModel', function(e) {
 				var data = e.detail.data;
-				console.log('UpVehileModel:'+JSON.stringify(data));
-				document.getElementById('bodyP_'+data.vmIndex).innerText = data.mileageAndBuyVehicleDate;
-				
+				console.log('UpVehileModel:' + JSON.stringify(data));
+				plus.storage.setItem('VehicleModel', JSON.stringify(data));
+				document.getElementById('bodyP_' + data.vmIndex).innerText = data.mileageAndBuyVehicleDate;
 			});
-			
-			
-			function AddSingleVM(data,isClear){
+
+			function AddSingleVM(data, isClear) {
 				var parentDIV = document.getElementById('VehileModelCollection');
-				if(isClear)
+				if (isClear)
 					parentDIV.innerHTML = '';
 				var div = document.createElement('div');
 				div.className = 'mui-table-view-cell ';
@@ -266,7 +266,7 @@
 				var compose = document.createElement('a');
 				compose.className = 'mui-btn mui-btn-yellow mui-icon mui-icon-compose';
 				compose.setAttribute('data-id', data.index);
-				compose.setAttribute('data-vmid',data.vmIndex);
+				compose.setAttribute('data-vmid', data.vmIndex);
 				// 删除
 				var trash = document.createElement('a');
 				trash.className = 'mui-btn mui-btn-red mui-icon mui-icon-trash';
@@ -291,12 +291,11 @@
 				var bodyP = document.createElement('p');
 				bodyP.id = 'bodyP_' + data.vmIndex;
 				bodyP.className = 'mui-ellipsis';
-				if(isClear)
+				if (isClear)
 					bodyP.innerText = '车辆信息尚未完善';
-				else{
-					bodyP.innerText = data.mileageAndBuyVehicleDate ? data.mileageAndBuyVehicleDate:"车辆信息尚未完善";				
+				else {
+					bodyP.innerText = data.mileageAndBuyVehicleDate ? data.mileageAndBuyVehicleDate : "车辆信息尚未完善";
 				}
-
 				bodyDIV.appendChild(bodyP);
 				var input = document.createElement('input');
 				input.name = 'radio1';
@@ -309,7 +308,6 @@
 				div.appendChild(sliderHandleDIV);
 				parentDIV.appendChild(div);
 			}
-			
 		</script>
 	</body>
 

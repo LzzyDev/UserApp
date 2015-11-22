@@ -183,6 +183,17 @@
 			});
 			// 删除
 			document.getElementById('delete').addEventListener('tap', function() {
+				var btnArray = ['确认', '取消'];
+				mui.confirm('确认删除车型？', '删除车型', btnArray, function(e) {
+					if (e.index == 0) {
+						// 删除操作
+
+					} else {
+						setTimeout(function() {
+							mui.swipeoutClose(li);
+						}, 0);
+					}
+				});
 				var vmid = self.vmid;
 			});
 		</script>
