@@ -19,6 +19,8 @@
 .icon-daijinquan:before { content: "\e60a"; }
 .icon-baoyang1:before { content: "\e603"; }
 .icon-chuizi:before { content: "\e604"; }
+.icon-xiaobaoyang:before { content: "\e60f"; }
+.icon-dabaoyang:before { content: "\e610"; }
 .icon-xiche:before { content: "\e605"; }
 .icon-user:before { content: "\e608"; }
 .icon-chexingxuanze:before { content: "\e60b"; }

@@ -7,35 +7,40 @@
 		<title></title>
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/site.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/mui.poppicker.css"/>
 		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
 		<style type="text/css">
-			.mui-table-view{
+			.mui-table-view {
 				background-color: transparent;
 			}
-			.mui-table-view:before{
+			
+			.mui-table-view:before {
 				background-color: transparent;
 			}
-			.mui-table-view:after{
+			
+			.mui-table-view:after {
 				background-color: transparent;
 			}
 		</style>
 	</head>
 
 	<style type="text/css">
+
 	</style>
 
 	<body>
 		<div class="mui-content">
 
 			<ul class="mui-table-view mui-grid-view mui-grid-9">
-				<li style="background-color: #ff6504;" class="mui-table-view-cell mui-media mui-col-xs-8  mui-col-sm-8">
-					<a href="#">
+				<li id="seckill" style="background-color: #ff6504;" class="mui-table-view-cell mui-media mui-col-xs-8  mui-col-sm-8">
+					<a href="###">
 						<span class="mui-icon iconfont icon-chuizi"></span>
 						<div class="mui-media-body">求秒杀</div>
 					</a>
 				</li>
 				<li style="background-color: #A82E39" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="#">
+					<a href="###">
 						<p>
 							<h3 style="color: white;">紧急</h3></p>
 						<p>
@@ -94,14 +99,44 @@
 		</div>
 
 		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/mui.poppicker.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/MenuEvent.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/CarMaid.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-			 // 自动轮播图片
+			// 自动轮播图片
 			var slider = mui("#slider");
 			console.log(slider[0]);
-			 // 添加监听更新Banners 事件
+			// 求秒杀
+			document.getElementById('seckill').addEventListener('tap', function() {
+				console.log('123');
+				// 判断 车型信息是否完善；
+				
+				
+				
+				var seckillPicker = new mui.PopPicker();
+				seckillPicker.setData([{
+					value: 'ywj',
+					text: '小保'
+				}, {
+					value: 'aaa',
+					text: '大保'
+				}]);
+				seckillPicker.show(function(items) {
+					console.log(JSON.stringify(items[0]));
+				});
+				//				mui.openWindow({
+				//					url: 'Seckill.html',
+				//					id: 'Seckill.html',
+				//					show: {
+				//						autoShow: true,
+				//						aniShow: 'slide-in-right',
+				//						duration: 300
+				//					}
+				//				});
+			});
+			// 添加监听更新Banners 事件
 			window.addEventListener('UpBanners', function(e) {
 				console.log('UpBanners Even');
 				var banners = e.detail.data;
@@ -133,15 +168,14 @@
 					slider[0].appendChild(IndicatorDIV);
 					console.log(slider[0].innerHTML);
 					// 自动播放 cao 刚才还正常
-					setTimeout(function(){
+					setTimeout(function() {
 						slider.slider({
 							interval: 5000
 						});
-					},1000);
-//					slider.slider({
-//						interval: 5000
-//					});
-					
+					}, 1000);
+					//					slider.slider({
+					//						interval: 5000
+					//					});
 				}
 				// 更新完后关闭启动页
 				setTimeout(function() {
