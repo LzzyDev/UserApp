@@ -120,10 +120,13 @@
 						var sub = plus.webview.getWebviewById('default-sub');
 						// 触发事件
 						mui.fire(sub, 'AddVehileModel', {});
+						// 这是是首页 秒杀时 创建的 ，所以要触发两次。
+						sub = plus.webview.getWebviewById('VehicleModel/index.html');
+						mui.fire(sub, 'AddVehileModel', {});
+						
 						// 保存到本地数据存储区
-						console.log(JSON.stringify(data));
-						plus.storage.setItem('VehicleModel', JSON.stringify(data));
-						console.log('VehicleModel:' + plus.storage.getItem('VehicleModel'));
+						//plus.storage.setItem('VehicleModel', JSON.stringify(data));
+						//console.log('VehicleModel:' + plus.storage.getItem('VehicleModel'));
 						// 关闭系统等待框
 						plus.nativeUI.closeWaiting();
 						// 关闭窗口。
@@ -153,6 +156,11 @@
 							mui.fire(sub,'AddVehileModelForTourist',{
 								data:data
 							});
+							// 同上，触发两次
+							sub = plus.webview.getWebviewById('VehicleModel/index.html');
+							mui.fire(sub,'AddVehileModelForTourist',{
+								data:data
+							});
 							// 关闭窗口。
 							var vb = plus.webview.getWebviewById('VehicleBrandList.html');
 							var vm = plus.webview.getWebviewById('VehicleManufacturer.html');
@@ -167,6 +175,7 @@
 						}
 					});
 				}
+				mui.toast('请接着完善车型信息吧~')
 				console.log(this.id);
 			});
 		</script>

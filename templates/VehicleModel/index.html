@@ -34,7 +34,7 @@
 			}
 			
 			.mui-media-body {
-				margin-right: 25px;
+				margin-right: 40px;
 				font-size: 16px;
 			}
 			
@@ -61,6 +61,10 @@
 				top: 50px;
 				display: block;
 			}
+			input[type=radio]{
+				color: transparent;
+			}
+			
 		</style>
 	</head>
 
@@ -140,6 +144,7 @@
 					document.getElementById('VehicleAdd').innerText = '更改';
 				}
 				CarMaid.Vehicle.InitVehicleModel(OnSuccessCallback, OnErrorCallback, 3);
+				
 			});
 			document.getElementById('addVehileModel').addEventListener('tap', function() {
 				mui.openWindow({
@@ -152,36 +157,69 @@
 					}
 				});
 			});
+			
+			mui('#VehileModelCollection').on('change','input',function(){
+				this.checked = false;
+			});
 			// 选择车型事件
 			mui('#VehileModelCollection').on('tap', '.mui-slider-handle', function() {
-				var input = this.querySelector('.mui-slider-handle input');
-				input.checked = true;
 				console.log('点击内容');
 				plus.nativeUI.showWaiting();
 				var vmid = this.getAttribute('data-vmid');
 				var mileage = this.getAttribute('data-mileage');
 				var buyVehicleDate = this.getAttribute('data-buyVehicleDate');
+				var input = this.querySelector('.mui-slider-handle input');
+				// 判断 数据是否完全 公里数、 购车时间
+				if (mileage == 'null' || mileage == '' || buyVehicleDate == 'null' || buyVehicleDate == '') {
+					input.checked = false;
+					plus.nativeUI.closeWaiting();
+					mui.toast('请完善车型信息。');
+					return;
+				}
+				input.checked = true;
 				console.log(vmid);
 				console.log(mileage);
 				console.log(buyVehicleDate);
-				var url = 'http://api.cheshibang.com/api/vehicle/AddVehicleModel?VMID=' + vmid + '&Mileage=' + mileage + '&date=' + buyVehicleDate + '&IsDefault=true';
-				console.log(url);
-				mui.ajax(url, {
-					dataType: 'json',
-					type: 'post',
-					timeout: 5000,
-					success: function(data) {
-						plus.storage.setItem('VehicleModel', JSON.stringify(data));
-						plus.nativeUI.closeWaiting();
-						mui.back();
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(xhr.response);
-						console.log(type);
-						mui.toast('好像服务器罢工了~~');
-						plus.nativeUI.closeWaiting();
-					}
-				});
+				// 已登录 ： 
+				if (CarMaid.UserInfo.Has_login()) {
+					var url = 'http://api.cheshibang.com/api/vehicle/AddVehicleModel?VMID=' + vmid + '&Mileage=' + mileage + '&date=' + buyVehicleDate + '&IsDefault=true';
+					console.log(url);
+					mui.ajax(url, {
+						dataType: 'json',
+						type: 'post',
+						timeout: 5000,
+						success: function(data) {
+							console.log('选择：' + JSON.stringify(data));
+							plus.storage.setItem('VehicleModel', JSON.stringify(data));
+							plus.nativeUI.closeWaiting();
+							mui.back();
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(xhr.response);
+							console.log(type);
+							input.checked = false;
+							mui.toast('好像服务器罢工了~~');
+							plus.nativeUI.closeWaiting();
+						}
+					});
+				} else { // 未登录：直接存到 storage 中
+					var url = 'http://api.cheshibang.com/api/vehicle/GetVehicle?VMID=' + vmid;
+					mui.ajax(url, {
+						dataType: 'json',
+						type: 'get',
+						timeout: 5000,
+						success: function(data) {
+							plus.storage.setItem('VehicleModel', JSON.stringify(data));
+							plus.nativeUI.closeWaiting();
+							console.log('noLogin');
+							mui.back();
+						},
+						error: function() {
+							mui.toast('好像服务器罢工了~~');
+							plus.nativeUI.closeWaiting();
+						}
+					});
+				}
 			});
 			// 编辑车型
 			mui('#VehileModelCollection').on('tap', '.mui-icon-compose', function() {
@@ -208,15 +246,20 @@
 			// 删除车型
 			mui('#VehileModelCollection').on('tap', '.mui-icon-trash', function() {
 				var btnArray = ['确认', '取消'];
+				var self = this;
+				console.log(self.getAttribute('data-id'));
 				var li = this.parentNode.parentNode;
 				mui.confirm('确认删除车型？', '删除车型', btnArray, function(e) {
 					if (e.index == 0) {
 						// 删除操作
 						console.log('del');
-						console.log(this.getAttribute('data-id'));
 						plus.nativeUI.showWaiting();
-						if (this.getAttribute('data-id') != 'null') {
-							CarMaid.Vehicle.RemoveVehicleModel(this.getAttribute('data-id')); // 移除该车型。					
+						var vm = JSON.parse(plus.storage.getItem('VehicleModel'));
+						// 如果当前删除的项是存储在 storage 中的 一并删除。
+						if (vm != null && vm.index == self.getAttribute('data-id'))
+							plus.storage.removeItem('VehicleModel');
+						if (self.getAttribute('data-id') != 'null') {
+							CarMaid.Vehicle.RemoveVehicleModel(self.getAttribute('data-id')); // 移除该车型。					
 						} else {
 							plus.storage.removeItem('VehicleModel');
 							var bodyP = document.getElementById('null');
@@ -248,7 +291,14 @@
 			document.addEventListener('UpVehileModel', function(e) {
 				var data = e.detail.data;
 				console.log('UpVehileModel:' + JSON.stringify(data));
-				plus.storage.setItem('VehicleModel', JSON.stringify(data));
+				var handleDIV = document.getElementById('Handle_' + data.vmIndex);
+				console.log(handleDIV);
+				if (handleDIV) {
+					handleDIV.setAttribute('data-vmid', data.vmIndex);
+					handleDIV.setAttribute('data-mileage', data.mileage);
+					handleDIV.setAttribute('data-buyVehicleDate', data.buyVehicleDate);
+				}
+				//plus.storage.setItem('VehicleModel', JSON.stringify(data));
 				document.getElementById('bodyP_' + data.vmIndex).innerText = data.mileageAndBuyVehicleDate;
 			});
 
@@ -286,7 +336,7 @@
 				img.src = data.imageUrl;
 				console.log(data.imageUrl);
 				var bodyDIV = document.createElement('div');
-				bodyDIV.className = 'mui-media-body';
+				bodyDIV.className = 'mui-media-body mui-ellipsis';
 				bodyDIV.innerText = data.vehicleName;
 				var bodyP = document.createElement('p');
 				bodyP.id = 'bodyP_' + data.vmIndex;
@@ -300,6 +350,7 @@
 				var input = document.createElement('input');
 				input.name = 'radio1';
 				input.type = 'radio';
+				//input.disabled = true;
 				input.checked = true;
 				sliderHandleDIV.appendChild(img);
 				sliderHandleDIV.appendChild(bodyDIV);

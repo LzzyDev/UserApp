@@ -7,8 +7,8 @@
 		<title></title>
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/site.css" />
-		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.css"/>
-		<link rel="stylesheet" type="text/css" href="../../css/mui.poppicker.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.poppicker.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
 		<style type="text/css">
 			.mui-table-view {
@@ -34,13 +34,13 @@
 
 			<ul class="mui-table-view mui-grid-view mui-grid-9">
 				<li id="seckill" style="background-color: #ff6504;" class="mui-table-view-cell mui-media mui-col-xs-8  mui-col-sm-8">
-					<a href="###">
+					<a>
 						<span class="mui-icon iconfont icon-chuizi"></span>
 						<div class="mui-media-body">求秒杀</div>
 					</a>
 				</li>
 				<li style="background-color: #A82E39" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="###">
+					<a>
 						<p>
 							<h3 style="color: white;">紧急</h3></p>
 						<p>
@@ -60,37 +60,37 @@
 
 			<ul class="mui-table-view mui-grid-view mui-grid-9">
 				<li style="background-color: #ff6504;" class="mui-table-view-cell mui-media mui-col-xs-4  mui-col-sm-4">
-					<a href="#">
+					<a>
 						<span class="mui-icon iconfont icon-baoyang1"></span>
 						<div class="mui-media-body">保养</div>
 					</a>
 				</li>
 				<li style="background-color: #35918A;" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="#">
+					<a>
 						<span class="mui-icon iconfont icon-weixiu"></span>
 						<div class="mui-media-body">维修</div>
 					</a>
 				</li>
 				<li style="background-color: #2073A3;" class="mui-table-view-cell mui-media mui-col-xs-4  mui-col-sm-4">
-					<a href="#">
+					<a>
 						<span class="mui-icon iconfont icon-xiche"></span>
 						<div class="mui-media-body">洗车</div>
 					</a>
 				</li>
 				<li style="background-color: #BA414B;" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="#">
+					<a>
 						<span class="mui-icon iconfont icon-unie60a"></span>
 						<div class="mui-media-body">帮购</div>
 					</a>
 				</li>
 				<li style="background-color: #2D4B64;" class="mui-table-view-cell mui-media mui-col-xs-4  mui-col-sm-4">
-					<a href="#">
+					<a>
 						<span class="mui-icon iconfont icon-yuyuebanshi"></span>
 						<div class="mui-media-body">帮办</div>
 					</a>
 				</li>
 				<li style="background-color: #28784B;" class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-					<a href="#">
+					<a>
 						<span class="mui-icon iconfont icon-savemoney"></span>
 						<div class="mui-media-body">帮省</div>
 					</a>
@@ -110,12 +110,35 @@
 			console.log(slider[0]);
 			// 求秒杀
 			document.getElementById('seckill').addEventListener('tap', function() {
-				console.log('123');
+
 				// 判断 车型信息是否完善；
+				var vm = JSON.parse(plus.storage.getItem('VehicleModel'));
+				var mileage = null;
+				var buyVehicleDate = null;
+				if(vm){
+					mileage = vm.mileage;
+					buyVehicleDate = vm.buyVehicleDate;
+				}
+				console.log(mileage);
+				console.log(buyVehicleDate);
+				var reg = new RegExp("^[1-9][0-9]*$");
+				if (mileage == '' || !reg.test(mileage) || !Date.parse(buyVehicleDate)) {
+					mui.toast('请选择或完善保养的车型');
+					mui.openWindow({
+						url: '../VehicleModel/index.html',
+						id: 'VehicleModel/index.html',
+						show: {
+							autoShow: true,
+							aniShow: 'slide-in-right',
+							duration: 200
+						}
+					});
+					return;
+				}
 				
-				
-				
-				var seckillPicker = new mui.PopPicker();
+				var seckillPicker = new mui.PopPicker({
+					title:'请选择保养类型'
+				});
 				seckillPicker.setData([{
 					value: 'ywj',
 					text: '小保'
@@ -125,16 +148,17 @@
 				}]);
 				seckillPicker.show(function(items) {
 					console.log(JSON.stringify(items[0]));
+					seckillPicker.dispose();
+					mui.openWindow({
+						url: 'Seckill.html',
+						id: 'Seckill.html',
+						show: {
+							autoShow: true,
+							aniShow: 'slide-in-right',
+							duration: 200
+						}
+					});
 				});
-				//				mui.openWindow({
-				//					url: 'Seckill.html',
-				//					id: 'Seckill.html',
-				//					show: {
-				//						autoShow: true,
-				//						aniShow: 'slide-in-right',
-				//						duration: 300
-				//					}
-				//				});
 			});
 			// 添加监听更新Banners 事件
 			window.addEventListener('UpBanners', function(e) {

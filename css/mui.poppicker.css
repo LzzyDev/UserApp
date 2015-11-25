@@ -62,3 +62,12 @@
 	border: none;
 	float: left;
 }
+.mui-poppicker-title{
+	width: 80%;
+	margin: 5px auto;
+	padding: 5px 50px;
+	position:absolute;
+	/*left: 100px;*/
+	top:3px;
+	font-size: 16px;
+}

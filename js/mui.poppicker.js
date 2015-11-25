@@ -26,6 +26,7 @@
 
 	var panelBuffer = '<div class="mui-poppicker">\
 		<div class="mui-poppicker-header">\
+		<h4 class="mui-poppicker-title"></h4>\
 			<button class="mui-btn mui-poppicker-btn-cancel">取消</button>\
 			<button class="mui-btn mui-btn-blue mui-poppicker-btn-ok">确定</button>\
 			<div class="mui-poppicker-clear"></div>\
@@ -54,6 +55,8 @@
 			document.body.appendChild(self.panel);
 			self.ok = self.panel.querySelector('.mui-poppicker-btn-ok');
 			self.cancel = self.panel.querySelector('.mui-poppicker-btn-cancel');
+			self.title = self.panel.querySelector('.mui-poppicker-title');
+			self.title.innerText = options.title;
 			self.body = self.panel.querySelector('.mui-poppicker-body');
 			self.mask = $.createMask();
 			self.cancel.innerText = self.options.buttons[0];

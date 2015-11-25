@@ -338,8 +338,27 @@ var CarMaid = {};
 				}
 			});
 		},
+		/*
+		 * 获取用户的车型
+		 */
 		InitVehicleModel: function(onSuccess, onError, retry) {
 			//http://api.cheshibang.com/api/vehicle/GetUserVehicleModel
+			// 将 storage 中的车型 添加到 到用户的车型中去。
+			var vm = JSON.parse(plus.storage.getItem('VehicleModel'));
+			console.log('vm:' + vm);
+			if (vm) {
+				vehicle.EditVehicleModel(vm.vmIndex, vm.mileage, vm.buyVehicleDate, function() {
+					vehicle._InitVehicleModel(onSuccess, onError, retry);
+
+				}, function() {
+					onError();
+				}, 0);
+			}else{
+				vehicle._InitVehicleModel(onSuccess, onError, retry);
+			}
+
+		},
+		_InitVehicleModel: function(onSuccess, onError, retry) {
 			var url = 'http://api.cheshibang.com/api/vehicle/GetUserVehicleModel';
 			mui.ajax(url, {
 				dataType: 'json',
@@ -348,27 +367,27 @@ var CarMaid = {};
 				success: function(data) {
 					console.log(JSON.stringify(data));
 					var parentDIV = document.getElementById('VehileModelCollection');
-					
-					for(var i = 0; i< data.length; i++){
+
+					for (var i = 0; i < data.length; i++) {
 						var div = document.createElement('div');
 						div.className = 'mui-table-view-cell ';
 						div.id = data[i].index;
-						
+
 						// 删除。 编辑
 						var sliderDIV = document.createElement('div');
 						sliderDIV.className = 'mui-slider-right mui-disabled';
 						// 编辑
 						var compose = document.createElement('a');
 						compose.className = 'mui-btn mui-btn-yellow mui-icon mui-icon-compose';
-						compose.setAttribute('data-id',data[i].index);
-						compose.setAttribute('data-vmid',data[i].vmIndex);
+						compose.setAttribute('data-id', data[i].index);
+						compose.setAttribute('data-vmid', data[i].vmIndex);
 						// 删除
 						var trash = document.createElement('a');
 						trash.className = 'mui-btn mui-btn-red mui-icon mui-icon-trash';
-						trash.setAttribute('data-id',data[i].index);
+						trash.setAttribute('data-id', data[i].index);
 						sliderDIV.appendChild(compose);
 						sliderDIV.appendChild(trash);
-						
+
 						var sliderHandleDIV = document.createElement('div');
 						sliderHandleDIV.className = 'mui-slider-handle mui-radio';
 						sliderHandleDIV.id = 'Handle_' + data[i].vmIndex;
@@ -382,7 +401,7 @@ var CarMaid = {};
 						img.src = data[i].imageUrl;
 						console.log(data[i].imageUrl);
 						var bodyDIV = document.createElement('div');
-						bodyDIV.className = 'mui-media-body';
+						bodyDIV.className = 'mui-media-body mui-ellipsis';
 						bodyDIV.innerText = data[i].vehicleName;
 						var bodyP = document.createElement('p');
 						bodyP.id = 'bodyP_' + data[i].vmIndex;
@@ -392,6 +411,7 @@ var CarMaid = {};
 						var input = document.createElement('input');
 						input.name = 'radio1';
 						input.type = 'radio';
+						//input.disabled = true;
 						input.checked = data[i].isDefault;
 						sliderHandleDIV.appendChild(img);
 						sliderHandleDIV.appendChild(bodyDIV);
@@ -399,11 +419,11 @@ var CarMaid = {};
 
 						div.appendChild(sliderDIV);
 						div.appendChild(sliderHandleDIV);
-						
+
 						parentDIV.appendChild(div);
-						
+
 					}
-					
+
 					onSuccess();
 					console.log('success');
 				},
@@ -418,78 +438,77 @@ var CarMaid = {};
 				}
 			})
 		},
-		AddVehicleModel:function(vmid,onSuccess,onError,retry){
-			
-			var url = 'http://api.cheshibang.com/api/vehicle/AddVehicleModel?VMID=' + vmid + '&IsDefault=' + true;
-			
-			mui.ajax(url,{
+		AddVehicleModel: function(vmid, onSuccess, onError, retry) {
+
+			var url = 'http://api.cheshibang.com/api/vehicle/AddVehicleModel?VMID=' + vmid + '&IsDefault=' + false;
+
+			mui.ajax(url, {
 				dataType: 'json',
 				type: 'post',
 				timeout: 5000,
-				success:function(data){
-					
+				success: function(data) {
+
 					onSuccess(data);
 				},
-				error:function(xhr, type, errorThrown){
+				error: function(xhr, type, errorThrown) {
 					--retry;
 					console.log(retry);
 					if (retry > 0) {
-						return vehicle.AddVehicleModel(vmid,onSuccess,onError,retry);
+						return vehicle.AddVehicleModel(vmid, onSuccess, onError, retry);
 					}
 					console.log(xhr.response);
 					onError();
 				}
 			});
-			
+
 		},
-		RemoveVehicleModel:function(id){
+		RemoveVehicleModel: function(id) {
 			var url = 'http://api.cheshibang.com/api/vehicle/RemoveVehicleModel?id=' + id;
-			mui.ajax(url,{
+			mui.ajax(url, {
 				dataType: 'json',
 				type: 'post',
 				timeout: 5000,
-				success:function(data){
+				success: function(data) {
 					console.log('remove vehicle');
-					
+
 					var ChildDIV = document.getElementById(id);
 					ChildDIV.parentNode.removeChild(ChildDIV);
-					
+
 					plus.nativeUI.closeWaiting();
 
 				},
-				error:function(xhr, type, errorThrown){
-					
+				error: function(xhr, type, errorThrown) {
+
 					console.log(xhr.response);
 					mui.toast('删除失败！');
 					plus.nativeUI.closeWaiting();
 				}
 			});
 		},
-		EditVehicleModel:function(vmid,mileage,buyVehicleDate,onSuccess,onError,retry){
-			var url = 'http://api.cheshibang.com/api/vehicle/AddVehicleModel?VMID=' + vmid + '&Mileage=' + mileage 
-				+ '&date=' +buyVehicleDate;
-				
-				console.log(url);
-			mui.ajax(url,{
+		EditVehicleModel: function(vmid, mileage, buyVehicleDate, onSuccess, onError, retry) {
+			var url = 'http://api.cheshibang.com/api/vehicle/AddVehicleModel?VMID=' + vmid + '&Mileage=' + mileage + '&date=' + buyVehicleDate;
+
+			console.log(url);
+			mui.ajax(url, {
 				dataType: 'json',
 				type: 'post',
 				timeout: 5000,
-				success:function(data){
+				success: function(data) {
 					console.log('edit vehicle');
 					onSuccess(data);
 				},
-				error:function(xhr, type, errorThrown){
+				error: function(xhr, type, errorThrown) {
 					--retry;
 					console.log(retry);
 					if (retry > 0) {
-						return vehicle.EditVehicleModel(vmid,mileage,buyVehicleDate,onSuccess,onError,retry);
+						return vehicle.EditVehicleModel(vmid, mileage, buyVehicleDate, onSuccess, onError, retry);
 					}
 					console.log(xhr.response);
 					onError();
 				}
 			});
 		}
-		
+
 	}
 
 	$.Vehicle = vehicle;
@@ -510,9 +529,9 @@ var CarMaid = {};
 		var str2 = str.substring(0, 1);
 		if (str2 == "s") {
 			return str1 * 1000;
-		}else if(str2 =="m"){
+		} else if (str2 == "m") {
 			return str1 * 60 * 1000;
-		}else if (str2 == "h") {
+		} else if (str2 == "h") {
 			return str1 * 60 * 60 * 1000;
 		} else if (str2 == "d") {
 			return str1 * 24 * 60 * 60 * 1000;
@@ -524,10 +543,10 @@ var CarMaid = {};
 		 *
 		 */
 		setCookies: function(url, name, value, time) {
-			
+
 			var strsec = getsec(time);
-    			var exp = new Date();
-    			exp.setTime(exp.getTime() + strsec * 1);
+			var exp = new Date();
+			exp.setTime(exp.getTime() + strsec * 1);
 
 			var tmp = name + "=" + value + ";expires=" + exp.toGMTString() + ";path=/";
 			console.log(tmp);
@@ -610,7 +629,7 @@ var CarMaid = {};
 			}
 			$.Cookies.setCookies(COOKIES_URL, "UserID", arguments[0], 'd3'); // 三天有效期。
 		},
-		Phone:function(){
+		Phone: function() {
 			if (arguments.length == 0) {
 				return $.Cookies.getCookies(PHONE);
 			}
