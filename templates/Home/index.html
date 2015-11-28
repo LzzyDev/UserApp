@@ -110,12 +110,11 @@
 			console.log(slider[0]);
 			// 求秒杀
 			document.getElementById('seckill').addEventListener('tap', function() {
-
 				// 判断 车型信息是否完善；
 				var vm = JSON.parse(plus.storage.getItem('VehicleModel'));
 				var mileage = null;
 				var buyVehicleDate = null;
-				if(vm){
+				if (vm) {
 					mileage = vm.mileage;
 					buyVehicleDate = vm.buyVehicleDate;
 				}
@@ -135,30 +134,41 @@
 					});
 					return;
 				}
-				
-				var seckillPicker = new mui.PopPicker({
-					title:'请选择保养类型'
-				});
-				seckillPicker.setData([{
-					value: 'ywj',
-					text: '小保'
-				}, {
-					value: 'aaa',
-					text: '大保'
-				}]);
-				seckillPicker.show(function(items) {
-					console.log(JSON.stringify(items[0]));
-					seckillPicker.dispose();
-					mui.openWindow({
-						url: 'Seckill.html',
-						id: 'Seckill.html',
-						show: {
-							autoShow: true,
-							aniShow: 'slide-in-right',
-							duration: 200
-						}
+				CarMaid.Home.SecKill.GetSecKillType(function(data) {
+					
+					var setData = new Array();
+					for(var i = 0; i < data.length; i++){
+						var item = new Object();
+						item.value = data[i].index;
+						item.text = data[i].name;
+						setData[i] = item;
+					}
+					console.log(setData.toString());
+					var seckillPicker = new mui.PopPicker({
+						title: '请选择保养类型'
 					});
-				});
+					seckillPicker.setData(setData);
+					seckillPicker.show(function(items) {
+						console.log(JSON.stringify(items[0].value));
+						mui.openWindow({
+							url: 'ConfirmSeckill.html',
+							id: 'ConfirmSeckill.html',
+							show: {
+								autoShow: true,
+								aniShow: 'slide-in-right',
+								duration: 200
+							},
+							extras:{
+								seckillType:items[0].value
+							}
+						});
+						setTimeout(function(){
+							seckillPicker.dispose();							
+						},1000);
+					});
+				}, function() {
+					mui.toast('好像服务器罢工了~~');
+				}, 3);
 			});
 			// 添加监听更新Banners 事件
 			window.addEventListener('UpBanners', function(e) {

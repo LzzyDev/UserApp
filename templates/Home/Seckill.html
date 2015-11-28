@@ -22,6 +22,37 @@
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
+			
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();				
+				var seckillType = self.seckillType;
+				
+				console.log(seckillType);
+				if(seckillType){
+					// 发布秒杀项
+					
+					showPage();
+					
+				}else{
+					// 获取 已经 发布的秒杀项
+
+				}
+				
+			});
+			
+			function showPage(){
+				// 关闭等待框。
+				plus.nativeUI.closeWaiting();
+				var self = plus.webview.currentWebview();				
+				// 显示页面
+				self.show("slide-in-right", 200,function(){
+					var ConfirmSeckill = plus.webview.getWebviewById('ConfirmSeckill.html');
+					if(ConfirmSeckill) ConfirmSeckill.close(); 
+				});
+			}
+			
+			
+			
 		</script>
 	</body>
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">确认发布秒杀项</h1>
+		</header>
+		<div class="mui-content">
+			美工你在哪
+			<button id="back" type="button" class="mui-btn">返回</button>
+			<button id="submit" type="button" class="mui-btn mui-btn-primary">确认发布</button>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			// 返回
+			document.getElementById('back').addEventListener('tap', function() {
+				mui.back();
+			});
+			// 确认发布
+			document.getElementById('submit').addEventListener('tap', function() {
+				var self = plus.webview.currentWebview();
+				var seckillType = self.seckillType;
+				console.log(seckillType);
+				var seckill = mui.openWindow({
+					url: 'Seckill.html',
+					id: 'Seckill.html',
+					show: {
+						autoShow: false,
+						aniShow: 'slide-in-right',
+						duration: 200
+					},
+					extras:{
+						seckillType:seckillType
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>

@@ -644,3 +644,57 @@ var CarMaid = {};
 	$.UserInfo = UserInfo;
 
 })(CarMaid, mui);
+
+
+(function($,mui){
+	var home = {
+		SecKill:{
+			/*
+			 * 获取 秒杀类型
+			 */
+			GetSecKillType:function(onSuccess, onError, retry){
+				var url = 'http://api.cheshibang.com/api/Home/GetSecKillType';
+				mui.ajax(url,{
+					dataType: 'json',
+					type: 'get',
+					timeout: 5000,
+					success:function(data){
+						onSuccess(data);
+					},
+					error:function(){
+						--retry;
+						if(retry>0){
+							return home.SecKill.GetSecKillType(onSuccess, onError, retry);
+						}
+						onError();
+					}
+				});
+			},
+			/*
+			 * 发布秒杀项
+			 */
+			ReleaseSeckill:function(onSuccess, onError, retry){
+				var url = '';
+				mui.ajax(url,{
+					dataType: 'json',
+					type: 'post',
+					timeout: 5000,
+					success:function(data){
+						onSuccess(data);
+					},
+					error:function(){
+						--retry;
+						if(retry>0){
+							return home.SecKill.GetSecKillType(onSuccess, onError, retry);
+						}
+						onError();
+					}
+				});
+			}
+		}
+		
+	};
+	
+	$.Home = home;
+	
+})(CarMaid, mui);
